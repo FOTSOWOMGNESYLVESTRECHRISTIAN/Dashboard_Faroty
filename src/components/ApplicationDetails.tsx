@@ -99,6 +99,7 @@ export interface Application {
   description: string;
   plans: Plan[];
   features: Feature[];
+  logo?: string;
 }
 
 interface ApplicationDetailsProps {

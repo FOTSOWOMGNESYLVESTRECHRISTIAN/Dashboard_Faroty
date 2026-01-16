@@ -5,12 +5,12 @@ import { Users, Smartphone, TrendingUp, DollarSign, CalendarPlus, ScanLine, Char
 import { Button } from "./ui/button";
 
 const monthlyData = [
-  { name: "Jan", applications: 12, subscriptions: 45 },
-  { name: "Fév", applications: 19, subscriptions: 52 },
-  { name: "Mar", applications: 15, subscriptions: 48 },
-  { name: "Avr", applications: 22, subscriptions: 61 },
-  { name: "Mai", applications: 28, subscriptions: 73 },
-  { name: "Juin", applications: 34, subscriptions: 89 },
+  { name: "Jan", applications: 12, souscriptions: 45 },
+  { name: "Fév", applications: 19, souscriptions: 52 },
+  { name: "Mar", applications: 15, souscriptions: 48 },
+  { name: "Avr", applications: 22, souscriptions: 61 },
+  { name: "Mai", applications: 28, souscriptions: 73 },
+  { name: "Juin", applications: 34, souscriptions: 89 },
 ];
 
 const categoryData = [
@@ -43,7 +43,7 @@ export function DashboardStats() {
         <div className="space=y-1">
           <h1 className="text-gray-900 text-xl font-semibold">Statistiques du Dashboard</h1>
         </div>
-        <p className="text-gray-400 text-sm">Vue d'ensemble de vos applications et subscriptions</p>
+        <p className="text-gray-400 text-sm">Vue d'ensemble de vos applications et souscriptions</p>
       </div>
 
       {/* Cartes de statistiques */}
@@ -81,7 +81,7 @@ export function DashboardStats() {
                 </div>
                 <p className="text-xs text-gray-400">par rapport au mois dernier</p>
               </div>
-              <p className="text-gray-900 text-lg font-semibold">Subscriptions Actives</p>
+              <p className="text-gray-900 text-lg font-semibold">souscriptions Actives</p>
             </div>
           </CardContent>
         </Card>
@@ -132,7 +132,7 @@ export function DashboardStats() {
           <CardHeader>
             <div className="flex items-start justify-between flex-wrap gap-4">
               <div>
-                <CardTitle className="text-gray-900 text-lg fond-semibold">Applications & Subscriptions</CardTitle>
+                <CardTitle className="text-gray-900 text-lg fond-semibold">Applications & souscriptions</CardTitle>
                 <CardDescription className="text-gray-400 text-xs">
                   Évolution mensuelle des 6 derniers mois
                 </CardDescription>
@@ -171,7 +171,7 @@ export function DashboardStats() {
                 />
                 <Legend />
                 <Bar dataKey="applications" fill="#318754" name="Applications" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="subscriptions" fill="#98a42a" name="Subscriptions" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="souscriptions" fill="#98a42a" name="souscriptions" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -218,9 +218,9 @@ export function DashboardStats() {
       <Card className="border-0 shadow-md overflow-hidden relative">
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-yellow-500"></div>
         <CardHeader>
-          <CardTitle className="text-gray-900 text-lg fond-semibold">Tendance des Subscriptions</CardTitle>
+          <CardTitle className="text-gray-900 text-lg fond-semibold">Tendance des souscriptions</CardTitle>
           <CardDescription className="text-gray-400 text-xs">
-            Croissance des subscriptions sur 6 mois
+            Croissance des souscriptions sur 6 mois
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -239,10 +239,10 @@ export function DashboardStats() {
               <Legend />
               <Line
                 type="monotone"
-                dataKey="subscriptions"
+                dataKey="souscriptions"
                 stroke="#8b68a6"
                 strokeWidth={2}
-                name="Subscriptions"
+                name="souscriptions"
                 dot={{ fill: "#8b68a6", r: 4 }}
               />
             </LineChart>
@@ -271,7 +271,7 @@ export function DashboardStats() {
               className="h-20 bg-gray-50 hover:bg-gray-100 text-gray-700 border-0 flex-col gap-2"
             >
               <ScanLine className="h-5 w-5" />
-              <span className="text-sm">Voir les subscriptions</span>
+              <span className="text-sm">Voir les souscriptions</span>
             </Button>
 
             <Button

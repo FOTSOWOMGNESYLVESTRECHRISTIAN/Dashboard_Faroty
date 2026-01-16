@@ -5,15 +5,15 @@ import type { Abonnement } from "../components/AbonnementDetails";
 type ApiEnvelope<T> =
   | T
   | {
-      success?: boolean;
-      message?: string;
-      data?: T;
-      error?: any;
-      errorCode?: any;
-      content?: T;
-      items?: T;
-      records?: T;
-    };
+    success?: boolean;
+    message?: string;
+    data?: T;
+    error?: any;
+    errorCode?: any;
+    content?: T;
+    items?: T;
+    records?: T;
+  };
 
 export interface PaginatedResponse<T> {
   content: T[];
@@ -119,7 +119,7 @@ function normalizeStatus(
   isPendingActivation?: boolean,
 ): "active" | "expired" | "cancelled" {
   if (isPendingActivation) return "cancelled";
-  
+
   switch (status?.toUpperCase()) {
     case "ACTIVE":
     case "TRIAL":
@@ -183,7 +183,7 @@ export const abonnementService = {
       });
 
       const data = unwrap<{ content: ApiAbonnement[] } & Omit<PaginatedResponse<ApiAbonnement>, 'content'>>(response as any);
-      
+
       // Gérer le cas où la réponse pourrait être directement le tableau de contenu
       if (Array.isArray(data)) {
         return {
@@ -200,8 +200,27 @@ export const abonnementService = {
       }
 
       // Cas normal où la réponse est paginée
+      const rawContent = data.content || [];
+      const enrichedSubscriptions = await Promise.all(
+        rawContent.map(async (raw) => {
+          const sub = normalizeAbonnement(raw);
+          try {
+            if (raw.contextType === 'USER' && raw.contextId) {
+              const { userService } = await import('./userService');
+              const user = await userService.getUserById(raw.contextId);
+              if (user) {
+                sub.contextName = user.name;
+              }
+            }
+          } catch (err) {
+            console.warn(`Impossible de résoudre le nom du contexte pour ${raw.id}`, err);
+          }
+          return sub;
+        })
+      );
+
       return {
-        content: (data.content || []).map(normalizeAbonnement),
+        content: enrichedSubscriptions,
         page: data.page || 0,
         size: data.size || 10,
         totalElements: data.totalElements || 0,
@@ -213,6 +232,52 @@ export const abonnementService = {
       };
     } catch (error) {
       console.error('[abonnementService] Error fetching abonnements:', error);
+      throw error;
+    }
+  },
+
+  async getUserSubscriptionContexts(userId: string): Promise<any[]> {
+    try {
+      const response = await apiClient.get<{ success: boolean; data: any[] }>(
+        API_ENDPOINTS.ABONNEMENT.SUBSCRIPTION_USERS_BY_USER(userId)
+      );
+      return unwrap(response) || [];
+    } catch (error) {
+      console.error('[abonnementService] Error fetching user subscription contexts:', error);
+      throw error;
+    }
+  },
+
+  async getSubscriptionUsers(subscriptionId: string): Promise<any[]> {
+    try {
+      const response = await apiClient.get<ApiEnvelope<any[]>>(
+        API_ENDPOINTS.ABONNEMENT.SUBSCRIPTION_USERS_BY_SUBSCRIPTION(subscriptionId)
+      );
+      return unwrap(response) || [];
+    } catch (error) {
+      console.error('[abonnementService] Error fetching subscription users:', error);
+      throw error;
+    }
+  },
+
+  async addSubscriptionUser(subscriptionId: string, userId: string): Promise<any> {
+    try {
+      const response = await apiClient.post(
+        API_ENDPOINTS.ABONNEMENT.subscriptionUsers,
+        { subscriptionId, userId }
+      );
+      return unwrap(response);
+    } catch (error) {
+      console.error('[abonnementService] Error adding subscription user:', error);
+      throw error;
+    }
+  },
+
+  async removeSubscriptionUser(id: string): Promise<void> {
+    try {
+      await apiClient.delete(API_ENDPOINTS.ABONNEMENT.DELETE_SUBSCRIPTION_USER(id));
+    } catch (error) {
+      console.error('[abonnementService] Error removing subscription user:', error);
       throw error;
     }
   },

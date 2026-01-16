@@ -116,10 +116,10 @@ export function Settings() {
 
       <Tabs defaultValue="profile" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="profile">Profil</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="security">Sécurité</TabsTrigger>
-          <TabsTrigger value="api">API</TabsTrigger>
+          <TabsTrigger value="profile" style={{cursor: 'pointer'}}>Profil</TabsTrigger>
+          <TabsTrigger value="notifications" style={{cursor: 'pointer'}}>Notifications</TabsTrigger>
+          <TabsTrigger value="security" style={{cursor: 'pointer'}}>Sécurité</TabsTrigger>
+          <TabsTrigger value="api" style={{cursor: 'pointer'}}>API</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="space-y-4">
@@ -187,7 +187,7 @@ export function Settings() {
                 />
               </div>
               <div className="flex justify-end">
-                <Button type="button" className="bg-[#1e3a5f] hover:bg-[#152d4a] text-white">Enregistrer les modifications</Button>
+                <Button type="button" className="bg-[#1e3a5f] hover:bg-[#152d4a] text-white" style={{cursor: 'pointer'}}>Enregistrer les modifications</Button>
               </div>
             </CardContent>
           </Card>
@@ -271,7 +271,7 @@ export function Settings() {
                 />
               </div>
               <div className="flex justify-end">
-                <Button type="button" variant="outline">Réinitialiser</Button>
+                <Button className="bg-blue-100 hover:bg-blue-200" type="button" variant="outline" style={{cursor: 'pointer'}}>Réinitialiser</Button>
               </div>
             </CardContent>
           </Card>
@@ -287,7 +287,7 @@ export function Settings() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
+              <div className="flex items-start justify-between gap-4 rounded-lg border p-4 bg-gray-100">
                 <div>
                   <h4 className="text-sm font-medium leading-none">
                     Authentification à deux facteurs
@@ -311,7 +311,7 @@ export function Settings() {
                 <p className="text-muted-foreground mt-1 text-sm">
                   Dernier changement : {security.lastPasswordChange}
                 </p>
-                <Button type="button" className="mt-4" variant="outline">
+                <Button type="button" className="mt-4 bg-primary hover:bg-primary text-white hover:text-white" variant="outline" style={{cursor: 'pointer'}}>
                   Mettre à jour le mot de passe
                 </Button>
               </div>
@@ -334,11 +334,12 @@ export function Settings() {
                           {session.location} • {session.lastActive}
                         </p>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 p-4">
                         {session.current ? (
                           <Badge variant="secondary">Session actuelle</Badge>
                         ) : (
                           <Button
+                            className="bg-red-500 hover:bg-red-600 text-white hover:text-white"
                             type="button"
                             variant="outline"
                             size="sm"
@@ -348,6 +349,7 @@ export function Settings() {
                                 sessions: prev.sessions.filter((s) => s.id !== session.id),
                               }))
                             }
+                            style={{cursor: 'pointer'}}
                           >
                             Déconnecter
                           </Button>
@@ -379,6 +381,7 @@ export function Settings() {
                     type="button"
                     variant="outline"
                     onClick={() => navigator.clipboard?.writeText(API_BASE_URL)}
+                    style={{cursor: 'pointer'}}
                   >
                     Copier
                   </Button>
@@ -421,7 +424,7 @@ export function Settings() {
                         <Badge
                           key={`${page}-${endpoint.id}`}
                           variant="outline"
-                          className="rounded-full font-mono text-[11px]"
+                          className="rounded-full font-mono text-[11px] p-4"
                         >
                           {endpoint.method} {endpoint.path.replace(/^https?:\/\/[^/]+/i, "")}
                         </Badge>
@@ -453,20 +456,20 @@ export function Settings() {
                 onChange={(event) => setEndpointFilter(event.target.value)}
                 className="rounded-full border-primary/20"
               />
-              <div className="max-h-[360px] overflow-auto rounded-2xl border border-primary/15">
+              <div className="max-h-[360px] overflow-auto rounded-2xl border border-primary/15 p-4">
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-white/90 backdrop-blur">
+                  <thead className="sticky top-0 bg-purple-100 backdrop-blur">
                     <tr>
-                      <th className="p-3 text-left text-xs uppercase tracking-widest text-muted-foreground">
+                      <th className="p-4 text-left text-xs uppercase tracking-widest text-muted-foreground">
                         Méthode
                       </th>
-                      <th className="p-3 text-left text-xs uppercase tracking-widest text-muted-foreground">
+                      <th className="p-4 text-left text-xs uppercase tracking-widest text-muted-foreground">
                         Nom
                       </th>
-                      <th className="p-3 text-left text-xs uppercase tracking-widest text-muted-foreground">
+                      <th className="p-4 text-left text-xs uppercase tracking-widest text-muted-foreground">
                         Chemin
                       </th>
-                      <th className="p-3 text-left text-xs uppercase tracking-widest text-muted-foreground">
+                      <th className="p-4 text-left text-xs uppercase tracking-widest text-muted-foreground">
                         Pages
                       </th>
                     </tr>
@@ -474,14 +477,14 @@ export function Settings() {
                   <tbody>
                     {filteredEndpoints.slice(0, 30).map((endpoint) => (
                       <tr key={endpoint.id} className="border-t">
-                        <td className="p-3">
-                          <Badge variant="outline" className="rounded-full px-3 py-1">
+                        <td className="p-4">
+                          <Badge variant="outline" className="rounded-full px-3 py-1 bg-blue-100">
                             {endpoint.method}
                           </Badge>
                         </td>
-                        <td className="p-3 font-semibold text-gray-900">{endpoint.label}</td>
-                        <td className="p-3 font-mono text-xs text-muted-foreground">{endpoint.path}</td>
-                        <td className="p-3 text-xs text-muted-foreground">
+                        <td className="p-4 font-semibold text-gray-900">{endpoint.label}</td>
+                        <td className="p-4 font-mono text-xs text-muted-foreground">{endpoint.path}</td>
+                        <td className="p-4 text-xs text-muted-foreground">
                           {endpoint.pages.length > 0
                             ? endpoint.pages.map((page) => PAGE_LABELS[page]).join(", ")
                             : "—"}

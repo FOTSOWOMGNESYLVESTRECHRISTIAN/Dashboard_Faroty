@@ -1,19 +1,19 @@
 import { apiClient } from "../utils/apiClient";
 import { API_ENDPOINTS } from "../utils/apiEndpoints";
-import type { Subscription } from "../components/SubscriptionDetails";
+import type { Abonnement as Subscription } from "../components/AbonnementDetails";
 
 type ApiEnvelope<T> =
   | T
   | {
-      success?: boolean;
-      message?: string;
-      data?: T;
-      error?: any;
-      errorCode?: any;
-      content?: T;
-      items?: T;
-      records?: T;
-    };
+    success?: boolean;
+    message?: string;
+    data?: T;
+    error?: any;
+    errorCode?: any;
+    content?: T;
+    items?: T;
+    records?: T;
+  };
 
 interface PaginatedResponse<T> {
   content: T[];
@@ -169,6 +169,8 @@ const normalizeSubscription = (raw: ApiSubscription): Subscription => {
     status: normalizeStatus(raw.status, raw.isPendingActivation),
     startDate,
     endDate,
+    planName: raw.planName,
+    planId: raw.planId
   };
 };
 
@@ -179,42 +181,62 @@ export const subscriptionService = {
   ): Promise<PaginatedResponse<Subscription>> {
     try {
       const payload = await apiClient.get<ApiEnvelope<any>>(
-        API_ENDPOINTS.SUBSCRIPTION.SUBSCRIPTIONS,
+        API_ENDPOINTS.ABONNEMENT.ABONNEMENTS,
         {
           query: { page, size },
         },
       );
 
       const raw = unwrap<Record<string, any>>(payload);
-
-      // Gérer différentes structures de réponse
       let responseData = raw;
-      
-      // Si la réponse est directement dans data
+
       if (raw?.data && typeof raw.data === "object" && !Array.isArray(raw.data)) {
         responseData = raw.data;
-      } else if (raw?.data && Array.isArray(raw.data)) {
-        // Si data est directement un tableau
-        return {
-          content: raw.data.map((item: any) => normalizeSubscription(item)),
-          page: 0,
-          size: raw.data.length,
-          totalElements: raw.data.length,
-          totalPages: 1,
-          last: true,
-          first: true,
-          hasNext: false,
-          hasPrevious: false,
-        };
       }
 
-      // Si c'est un tableau direct
+      // Extraction du contenu brut
+      let rawContent: any[] = [];
       if (Array.isArray(responseData)) {
+        rawContent = responseData;
+      } else if (responseData?.content || responseData?.items) {
+        rawContent = responseData.content || responseData.items || [];
+      } else if (raw?.data && Array.isArray(raw.data)) {
+        rawContent = raw.data;
+      }
+
+      // Enrichissement des données
+      const enrichedContent = await Promise.all(
+        rawContent.map(async (item) => {
+          const sub = normalizeSubscription(item);
+          try {
+            if (item.contextType === 'USER' && item.contextId) {
+              const { userService } = await import('./userService');
+              const user = await userService.getUserById(item.contextId);
+              if (user) {
+                sub.contextName = user.name;
+              } else {
+                sub.contextName = "Utilisateur";
+              }
+            } else if (item.contextType) {
+              sub.contextName = item.contextType.charAt(0).toUpperCase() + item.contextType.slice(1).toLowerCase();
+            }
+          } catch (e) {
+            console.warn(`Failed to resolve context name for ${sub.id}`, e);
+            if (item.contextType) {
+              sub.contextName = item.contextType.charAt(0).toUpperCase() + item.contextType.slice(1).toLowerCase();
+            }
+          }
+          return sub;
+        })
+      );
+
+      // Construction de la réponse paginée
+      if (Array.isArray(responseData) || (raw?.data && Array.isArray(raw.data))) {
         return {
-          content: responseData.map((item: any) => normalizeSubscription(item)),
+          content: enrichedContent,
           page: 0,
-          size: responseData.length,
-          totalElements: responseData.length,
+          size: enrichedContent.length,
+          totalElements: enrichedContent.length,
           totalPages: 1,
           last: true,
           first: true,
@@ -222,25 +244,22 @@ export const subscriptionService = {
           hasPrevious: false,
         };
       }
-
-      // Si c'est un objet paginé
-      const content = responseData?.content || responseData?.items || [];
 
       return {
-        content: content.map((item: any) => normalizeSubscription(item)),
+        content: enrichedContent,
         page: responseData?.page ?? page,
         size: responseData?.size ?? size,
-        totalElements: responseData?.totalElements ?? content.length,
+        totalElements: responseData?.totalElements ?? enrichedContent.length,
         totalPages: responseData?.totalPages ?? 1,
         last: responseData?.last ?? true,
         first: responseData?.first ?? true,
         hasNext: responseData?.hasNext ?? false,
         hasPrevious: responseData?.hasPrevious ?? false,
       };
+
     } catch (error: any) {
       console.error("[subscriptionService] Error fetching subscriptions:", error);
-      
-      // Gestion spécifique de l'erreur 403 (Forbidden)
+
       if (error?.message?.includes("403") || error?.message?.includes("Forbidden")) {
         const forbiddenError = new Error(
           "Accès refusé. Vous n'avez pas les permissions nécessaires pour consulter les souscriptions."
@@ -249,11 +268,69 @@ export const subscriptionService = {
         (forbiddenError as any).status = 403;
         throw forbiddenError;
       }
-      
+
       throw error instanceof Error
         ? error
         : new Error("Impossible de récupérer les souscriptions");
     }
   },
+
+  async getUserSubscriptionContexts(userId: string): Promise<any[]> {
+    try {
+      const payload = await apiClient.get<ApiEnvelope<any>>(
+        `${API_ENDPOINTS.ABONNEMENT.subscriptionUsers}/user/${userId}`
+      );
+      const raw = unwrap<Record<string, any>>(payload);
+      return Array.isArray(raw) ? raw : (raw.data || []);
+    } catch (error) {
+      console.error(`[subscriptionService] Error fetching contexts for user ${userId}:`, error);
+      throw error;
+    }
+  },
+
+  async getSubscriptionByContext(
+    contextId: string,
+    contextType: string,
+    applicationId: string
+  ): Promise<Subscription | null> {
+    try {
+      const payload = await apiClient.get<ApiEnvelope<any>>(
+        `${API_ENDPOINTS.ABONNEMENT.subscriptionContext}/${contextId}/${contextType}/get-or-create`,
+        {
+          query: { applicationId }
+        }
+      );
+
+      const raw = unwrap<Record<string, any>>(payload);
+      // La donnée est souvent dans raw.data pour ce endpoint spécifique
+      const data = raw.data || raw;
+
+      const sub = normalizeSubscription(data);
+
+      try {
+        if (data.contextType === 'USER' && data.contextId) {
+          const { userService } = await import('./userService');
+          const user = await userService.getUserById(data.contextId);
+          if (user) {
+            sub.contextName = user.name;
+          } else {
+            sub.contextName = "Utilisateur";
+          }
+        } else if (data.contextType) {
+          sub.contextName = data.contextType.charAt(0).toUpperCase() + data.contextType.slice(1).toLowerCase();
+        }
+      } catch (e) {
+        console.warn(`Failed to resolve context name for single subscription ${sub.id}`, e);
+        if (data.contextType) {
+          sub.contextName = data.contextType.charAt(0).toUpperCase() + data.contextType.slice(1).toLowerCase();
+        }
+      }
+
+      return sub;
+    } catch (error) {
+      console.error(`[subscriptionService] Error fetching subscription for context ${contextId}:`, error);
+      throw error;
+    }
+  }
 };
 

@@ -21,7 +21,7 @@ const getBaseUrl = (): string => {
     env?.NODE_ENV === "development" ||
     env?.VITE_DEV === "true";
 
-  const DEFAULT_BASE = "https://api-dev.faroty.com";
+  const DEFAULT_BASE = "https://api-prod.faroty.me";
 
   const runtimeHost =
     typeof window !== "undefined" && window?.location ? window.location.hostname : "";
@@ -111,6 +111,9 @@ const paths = {
     plans: "/souscription/api/v1/plans",
     planFeatures: "/souscription/api/v1/plan-features",
     abonnements: "/souscription/api/v1/subscriptions",
+    subscriptionUsers: "/souscription/api/v1/subscription-users",
+    SUBSCRIPTION_USERS_BY_USER: (userId: string) => `/souscription/api/v1/subscription-users/user/${userId}`,
+    subscriptionContext: "/souscription/api/v1/subscriptions/context",
     quotaConsume: "/souscription/api/v1/quota/consume",
     quotaCheck: "/souscription/api/v1/quota/check",
     promotions: "/souscription/api/v1/promotions",
@@ -222,6 +225,11 @@ export interface AbonnementEndpoints {
   PLAN_FEATURES: string;
   PLAN_FEATURES_BY_PLAN: (planId: string) => string;
   ABONNEMENTS: string;
+  subscriptionUsers: string;
+  SUBSCRIPTION_USERS_BY_USER: (userId: string) => string;
+  SUBSCRIPTION_USERS_BY_SUBSCRIPTION: (subscriptionId: string) => string;
+  DELETE_SUBSCRIPTION_USER: (id: string) => string;
+  subscriptionContext: string;
   GET_OR_CREATE_ABONNEMENT: (contextId: string, contextType: string) => string;
   PROMOTIONS: string;
   TRIAL_POLICIES: string;
@@ -288,7 +296,7 @@ export const API_ENDPOINTS: Endpoints = {
     REFRESH_TOKEN: joinBase(paths.auth.refresh),
     LOGOUT: joinBase(paths.auth.logout),
   },
-  
+
   // Users Management
   USERS: {
     BASE: joinBase(paths.users.base),
@@ -310,7 +318,7 @@ export const API_ENDPOINTS: Endpoints = {
       CANCEL: joinBase(paths.contacts.update.cancel),
     },
   },
-  
+
   // KYC Management
   KYC: {
     BASE: joinBase(paths.kyc.base),
@@ -320,7 +328,7 @@ export const API_ENDPOINTS: Endpoints = {
     SUBMIT: joinBase(paths.kyc.submitLegacy),
     STATUS: (id: string) => joinBase(`${paths.kyc.base}/${id}/status`),
   },
-  
+
   // Media Management
   MEDIA: {
     IMPORT: joinBase(paths.media.importOne),
@@ -328,41 +336,40 @@ export const API_ENDPOINTS: Endpoints = {
     UPLOAD: joinBase(paths.media.upload),
     BY_ID: (id: string) => joinBase(`${paths.media.base}/${id}`),
   },
-  
+
   // Guest
   GUEST: {
     STORE: joinBase(paths.guest.store),
   },
-  
+
   // Abonnement Services
   ABONNEMENT: {
     APPLICATIONS: joinBase(paths.abonnement.getAllApplications || paths.abonnement.applications),
     FEATURES: joinBase(paths.abonnement.features),
-    FEATURES_BY_APPLICATION: (appId: string) =>
-      joinBase(`/souscription/api/v1/features/application/${appId}`),
+    FEATURES_BY_APPLICATION: (appId: string) => joinBase(`/souscription/api/v1/features/application/${appId}`),
     PLANS: joinBase(paths.abonnement.plans),
-    PLANS_BY_APPLICATION: (appId: string) =>
-      joinBase(`/souscription/api/v1/plans/application/${appId}`),
+    PLANS_BY_APPLICATION: (appId: string) => joinBase(`/souscription/api/v1/plans/application/${appId}`),
     PLAN_FEATURES: joinBase(paths.abonnement.planFeatures),
-    PLAN_FEATURES_BY_PLAN: (planId: string) =>
-      joinBase(`/souscription/api/v1/plan-features/plan/${planId}`),
+    PLAN_FEATURES_BY_PLAN: (planId: string) => joinBase(`/souscription/api/v1/plan-features/plan/${planId}`),
     ABONNEMENTS: joinBase(paths.abonnement.abonnements),
-    GET_OR_CREATE_ABONNEMENT: (contextId: string, contextType: string) => 
-      joinBase(
-        `/souscription/api/v1/subscriptions/context/${contextId}/${contextType}/get-or-create`,
-      ),
+    GET_OR_CREATE_ABONNEMENT: (contextId: string, contextType: string) => joinBase(
+      `/souscription/api/v1/subscriptions/context/${contextId}/${contextType}/get-or-create`
+    ),
     PROMOTIONS: joinBase(paths.abonnement.promotions),
     TRIAL_POLICIES: joinBase(paths.abonnement.trialPolicies),
-    TRIAL_POLICY_BY_APPLICATION: (applicationId: string) =>
-      joinBase(`/souscription/api/v1/trial-policies/application/${applicationId}`),
+    TRIAL_POLICY_BY_APPLICATION: (applicationId: string) => joinBase(`/souscription/api/v1/trial-policies/application/${applicationId}`),
     QUOTA: {
       CONSUME: joinBase(paths.abonnement.quotaConsume),
       CHECK: joinBase(paths.abonnement.quotaCheck),
-      USAGE: (contextId: string, contextType: string) => 
-        joinBase(`/souscription/api/v1/quota/usage/${contextId}/${contextType}`),
+      USAGE: (contextId: string, contextType: string) => joinBase(`/souscription/api/v1/quota/usage/${contextId}/${contextType}`),
     },
+    subscriptionUsers: joinBase(paths.abonnement.subscriptionUsers),
+    SUBSCRIPTION_USERS_BY_USER: (userId: string) => joinBase(paths.abonnement.SUBSCRIPTION_USERS_BY_USER(userId)),
+    SUBSCRIPTION_USERS_BY_SUBSCRIPTION: (subscriptionId: string) => joinBase(`${paths.abonnement.subscriptionUsers}?subscriptionId=${subscriptionId}`),
+    DELETE_SUBSCRIPTION_USER: (id: string) => joinBase(`${paths.abonnement.subscriptionUsers}/${id}`),
+    subscriptionContext: joinBase(paths.abonnement.subscriptionContext)
   },
-  
+
   // Payment Services
   PAYMENTS: {
     ACCOUNTS: joinBase(paths.payments.accounts),
@@ -404,7 +411,7 @@ export const API_ENDPOINTS: Endpoints = {
       HISTORY: joinBase(paths.payments.transactions.history),
     },
   },
-  
+
   // API Keys Management
   API_KEYS: {
     CLIENTS: joinBase(paths.apiKeys.clients),
@@ -421,14 +428,14 @@ export default API_ENDPOINTS;
 // Helper pour construire des URLs avec query params
 export const buildUrl = (baseUrl: string, params?: Record<string, any>): string => {
   if (!params) return baseUrl;
-  
+
   const url = new URL(baseUrl);
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
       url.searchParams.append(key, String(value));
     }
   });
-  
+
   return url.toString();
 };
 

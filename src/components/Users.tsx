@@ -348,25 +348,25 @@ export function Users({ onViewDetails }: UsersProps) {
               />
             </div>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px]" style={{cursor: 'pointer'}}>
                 <SelectValue placeholder="Statut" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tous les statuts</SelectItem>
-                <SelectItem value="active">Actif</SelectItem>
-                <SelectItem value="inactive">Inactif</SelectItem>
-                <SelectItem value="suspended">Suspendu</SelectItem>
+                <SelectItem value="all" style={{cursor: 'pointer'}}>Tous les statuts</SelectItem>
+                <SelectItem value="active" style={{cursor: 'pointer'}}>Actif</SelectItem>
+                <SelectItem value="inactive" style={{cursor: 'pointer'}}>Inactif</SelectItem>
+                <SelectItem value="suspended" style={{cursor: 'pointer'}}>Suspendu</SelectItem>
               </SelectContent>
             </Select>
             <Select value={filterRole} onValueChange={setFilterRole}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px]" style={{cursor: 'pointer'}}>
                 <SelectValue placeholder="Rôle" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tous les rôles</SelectItem>
-                <SelectItem value="admin">Administrateur</SelectItem>
-                <SelectItem value="moderator">Modérateur</SelectItem>
-                <SelectItem value="user">Utilisateur</SelectItem>
+                <SelectItem value="all" style={{cursor: 'pointer'}}>Tous les rôles</SelectItem>
+                <SelectItem value="admin" style={{cursor: 'pointer'}}>Administrateur</SelectItem>
+                <SelectItem value="moderator" style={{cursor: 'pointer'}}>Modérateur</SelectItem>
+                <SelectItem value="user" style={{cursor: 'pointer'}}>Utilisateur</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -468,15 +468,15 @@ export function Users({ onViewDetails }: UsersProps) {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => openViewDialog(user)}>
+                            <DropdownMenuItem onClick={() => openViewDialog(user)} style={{cursor: 'pointer'}}>
                               <Eye className="mr-2 h-4 w-4" />
                               Voir les détails
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => openEditDialog(user)}>
+                            <DropdownMenuItem onClick={() => openEditDialog(user)} style={{cursor: 'pointer'}}>
                               <Edit className="mr-2 h-4 w-4" />
                               Modifier
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => openDisableDialog(user)}>
+                            <DropdownMenuItem onClick={() => openDisableDialog(user)} style={{cursor: 'pointer'}}>
                               {user.status === "active" ? (
                                 <>
                                   <UserX className="mr-2 h-4 w-4" />
@@ -493,6 +493,7 @@ export function Users({ onViewDetails }: UsersProps) {
                             <DropdownMenuItem
                               className="text-destructive"
                               onClick={() => openDeleteDialog(user)}
+                              style={{cursor: 'pointer'}}
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
                               Supprimer
@@ -547,13 +548,13 @@ export function Users({ onViewDetails }: UsersProps) {
                   setFormData({ ...formData, role: value })
                 }
               >
-                <SelectTrigger id="add-role">
+                <SelectTrigger id="add-role" style={{cursor: 'pointer'}}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="user">Utilisateur</SelectItem>
-                  <SelectItem value="moderator">Modérateur</SelectItem>
-                  <SelectItem value="admin">Administrateur</SelectItem>
+                  <SelectItem value="user" style={{cursor: 'pointer'}}>Utilisateur</SelectItem>
+                  <SelectItem value="moderator" style={{cursor: 'pointer'}}>Modérateur</SelectItem>
+                  <SelectItem value="admin" style={{cursor: 'pointer'}}>Administrateur</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -565,13 +566,13 @@ export function Users({ onViewDetails }: UsersProps) {
                   setFormData({ ...formData, status: value })
                 }
               >
-                <SelectTrigger id="add-status">
+                <SelectTrigger id="add-status" style={{cursor: 'pointer'}}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="active">Actif</SelectItem>
-                  <SelectItem value="inactive">Inactif</SelectItem>
-                  <SelectItem value="suspended">Suspendu</SelectItem>
+                  <SelectItem value="active" style={{cursor: 'pointer'}}>Actif</SelectItem>
+                  <SelectItem value="inactive" style={{cursor: 'pointer'}}>Inactif</SelectItem>
+                  <SelectItem value="suspended" style={{cursor: 'pointer'}}>Suspendu</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -1,6 +1,14 @@
 import { getAuthToken } from "../services/tokenStorage";
 
-const DEFAULT_BASE_URL = "https://api-dev.faroty.com";
+// URL de base par défaut pour l'environnement de développement
+const DEFAULT_BASE_URL = "https://api-prod.faroty.me";
+
+// Déclaration de type pour process.env
+declare const process: {
+  env: {
+    NODE_ENV?: 'development' | 'production' | 'test';
+  };
+};
 
 // Resolve import.meta.env safely (some TypeScript configs may not have env typed)
 const _import_meta_env: any =
@@ -42,10 +50,17 @@ if (normalizedEnvBase && normalizedEnvBase !== DEFAULT_BASE_URL) {
   proxyableBases.push(normalizedEnvBase);
 }
 
-// In dev, default to proxy (relative paths) unless a base was explicitly provided
-export const API_BASE_URL = shouldUseProxy
-  ? normalizedEnvBase || ""
-  : normalizedEnvBase || DEFAULT_BASE_URL;
+// Toujours utiliser l'URL directe de l'API en développement
+// pour éviter les problèmes de proxy
+const getApiBaseUrl = () => {
+  // En développement, utiliser directement l'URL de base
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+    return DEFAULT_BASE_URL;
+  }
+  return normalizedEnvBase || DEFAULT_BASE_URL;
+};
+
+export const API_BASE_URL = getApiBaseUrl();
 
 type QueryRecord = Record<string, string | number | boolean | undefined | null>;
 
@@ -56,9 +71,34 @@ export interface ApiFetchOptions extends RequestInit {
 
 const DEFAULT_HEADERS: HeadersInit = {
   "Content-Type": "application/json",
+  "Accept": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, x-api-key",
+  "Access-Control-Allow-Credentials": "true",
+  "Origin": window.location.origin
 };
 
+export class ApiError extends Error {
+  status: number;
+  statusText: string;
+  data: any;
+
+  constructor(message: string, status: number, statusText: string, data: any) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.statusText = statusText;
+    this.data = data;
+  }
+}
+
 function buildUrl(path: string, query?: QueryRecord) {
+  // Si l'URL est déjà complète, la retourner telle quelle
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
+
   // Si on est en mode proxy, convertir les URLs absolues connues en chemins relatifs
   if (shouldUseProxy && path.startsWith("http")) {
     const matchingBase = proxyableBases.find(
@@ -84,7 +124,7 @@ function buildUrl(path: string, query?: QueryRecord) {
 
   // Construire le chemin normalisé
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  
+
   // En développement avec proxy, utiliser le chemin relatif
   // Le proxy Vite redirigera vers https://api-dev.faroty.com
   if (!API_BASE_URL) {
@@ -97,18 +137,18 @@ function buildUrl(path: string, query?: QueryRecord) {
     }
     return url.toString();
   }
-  
+
   // En production, utiliser l'URL complète de l'API
   const fullPath = `${API_BASE_URL}${normalizedPath}`;
   const url = new URL(fullPath);
-  
+
   if (query) {
     Object.entries(query).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
       url.searchParams.set(key, String(value));
     });
   }
-  
+
   return url.toString();
 }
 
@@ -126,7 +166,7 @@ export async function apiFetch<TResponse = unknown>(
 
   // Récupérer le token d'authentification
   const token = getAuthToken();
-  
+
   // Créer les en-têtes d'authentification si un token est disponible
   const authHeaders: HeadersInit = {};
   if (token) {
@@ -141,11 +181,11 @@ export async function apiFetch<TResponse = unknown>(
     ...headers, // Les en-têtes personnalisés peuvent écraser les valeurs par défaut
     ...authHeaders, // L'authentification a la priorité la plus haute
   };
-  
+
   // Journalisation des en-têtes en développement
   if (_import_meta_env?.DEV) {
     console.log('[API] Auth token:', token ? 'Present' : 'Missing');
-    console.log('[API] Final request headers:', JSON.parse(JSON.stringify(mergedHeaders)));
+    // console.log('[API] Final request headers:', JSON.parse(JSON.stringify(mergedHeaders)));
   }
 
   if (body instanceof FormData || body instanceof Blob) {
@@ -167,8 +207,8 @@ export async function apiFetch<TResponse = unknown>(
       console.log("[API] Request body (raw):", body);
       console.log("[API] Request body (stringified):", isJsonPayload ? JSON.stringify(body, null, 2) : body);
     }
-    console.log("[API] Request headers:", mergedHeaders);
-    console.log("[API] Request body (final):", requestBody);
+    // console.log("[API] Request headers:", mergedHeaders);
+    // console.log("[API] Request body (final):", requestBody);
   }
 
   try {
@@ -178,23 +218,23 @@ export async function apiFetch<TResponse = unknown>(
       body: requestBody,
       ...rest,
     });
-    
+
     // Log de la réponse immédiatement
     if (_import_meta_env?.DEV) {
       console.log(`[API] Response status: ${response.status} ${response.statusText}`);
-      console.log("[API] Response headers:", Object.fromEntries(response.headers.entries()));
+      // console.log("[API] Response headers:", Object.fromEntries(response.headers.entries()));
     }
 
     if (!response.ok) {
       let errorMessage = `API request failed (${response.status} ${response.statusText})`;
       let errorDetails: any = null;
       let errorPayloadText = "";
-      
+
       try {
         // Toujours essayer de lire le body, même s'il est vide
         errorPayloadText = await response.text();
         console.log("[API Error] Raw error payload:", errorPayloadText);
-        
+
         if (errorPayloadText && errorPayloadText.trim()) {
           // Essayer de parser comme JSON pour un message plus clair
           try {
@@ -214,7 +254,7 @@ export async function apiFetch<TResponse = unknown>(
         console.error("Error reading error response:", e);
         errorMessage = `Failed to read error response: ${response.status} ${response.statusText}`;
       }
-      
+
       // Log détaillé en développement
       if (_import_meta_env?.DEV) {
         console.error(`[API Error] ${response.status} ${response.statusText}`, {
@@ -224,10 +264,10 @@ export async function apiFetch<TResponse = unknown>(
           requestBody: body ? (isJsonPayload ? JSON.stringify(body, null, 2) : body) : undefined,
         });
       }
-      
-      throw new Error(errorMessage);
+
+      throw new ApiError(errorMessage, response.status, response.statusText, errorDetails);
     }
-    
+
     // Log de la réponse en développement
     if (_import_meta_env?.DEV && response.status !== 204) {
       try {
@@ -275,4 +315,3 @@ export const apiClient = {
   delete: <T>(path: string, options?: ApiFetchOptions) =>
     apiFetch<T>(path, { ...options, method: "DELETE" }),
 };
-

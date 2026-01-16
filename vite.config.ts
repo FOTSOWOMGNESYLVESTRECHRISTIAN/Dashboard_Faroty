@@ -12,85 +12,97 @@ declare module 'http' {
 
 // Configuration du proxy
 const proxyConfig = {
-  '/auth': {
+  '^/auth/api/auth': {
     target: 'https://api-dev.faroty.com',
     changeOrigin: true,
     secure: false,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-      'Access-Control-Allow-Credentials': 'true'
-    },
+    rewrite: (path: string) => path.replace(/^\/auth\/api\/auth/, '/auth/api/auth'),
     configure: (proxy: any) => {
-      proxy.on('proxyReq', (proxyReq: any, req: IncomingMessage) => {
-        console.log('Proxying request to: ', req.url);
-        if (req.body) {
-          const bodyData = JSON.stringify(req.body);
-          proxyReq.setHeader('Content-Type', 'application/json');
-          proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-          proxyReq.write(bodyData);
-        }
+      proxy.on('proxyReq', (proxyReq: any) => {
+        proxyReq.setHeader('Accept', 'application/json');
+        proxyReq.setHeader('Content-Type', 'application/json');
+        // Ajout des en-têtes CORS nécessaires
+        proxyReq.setHeader('Access-Control-Allow-Origin', '*');
+        proxyReq.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        proxyReq.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
       });
 
-      proxy.on('proxyRes', (proxyRes: any, req: IncomingMessage) => {
-        console.log('Received response:', proxyRes.statusCode, req.url);
+      // Gestion des erreurs de proxy
+      proxy.on('error', (err: Error) => {
+        console.error('Proxy Error:', err);
       });
 
-      proxy.on('error', (err: Error, _req: IncomingMessage, res: ServerResponse) => {
-        console.error('Proxy error:', err);
-        res.writeHead(500, {
-          'Content-Type': 'application/json'
-        });
-        res.end(JSON.stringify({
-          error: 'Proxy Error',
-          details: err.message
-        }));
+      // Log des réponses du serveur
+      proxy.on('proxyRes', (proxyRes: any) => {
+        console.log('API Response Status:', proxyRes.statusCode);
       });
     }
   },
-  '/api': {
+  '^/api/.*': {
     target: 'https://api-dev.faroty.com',
     changeOrigin: true,
     secure: false,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-      'Access-Control-Allow-Credentials': 'true'
+    configure: (proxy: any) => {
+      proxy.on('proxyReq', (proxyReq: any) => {
+        proxyReq.setHeader('Accept', 'application/json');
+        proxyReq.setHeader('Content-Type', 'application/json');
+      });
     }
   },
-  '/souscription': {
+  '^/souscription/.*': {
     target: 'https://api-dev.faroty.com',
     changeOrigin: true,
     secure: false,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-      'Access-Control-Allow-Credentials': 'true'
+    configure: (proxy: any) => {
+      proxy.on('proxyReq', (proxyReq: any) => {
+        proxyReq.setHeader('Accept', 'application/json');
+        proxyReq.setHeader('Content-Type', 'application/json');
+      });
     }
   },
-  '/payments': {
-    target: 'https://api-dev.faroty.com',
+  '^/payments/.*': {
+    target: 'https://api-pay.faroty.me',
     changeOrigin: true,
     secure: false,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-      'Access-Control-Allow-Credentials': 'true'
+    rewrite: (path: string) => path.replace(/^\/payments/, ''),
+    configure: (proxy: any) => {
+      proxy.on('proxyReq', (proxyReq: any) => {
+        proxyReq.setHeader('Accept', 'application/json');
+        proxyReq.setHeader('Content-Type', 'application/json');
+        // Ajout des en-têtes CORS nécessaires
+        proxyReq.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+        proxyReq.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        proxyReq.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+      });
+      
+      // Gestion des erreurs de proxy
+      proxy.on('error', (err: Error) => {
+        console.error('Payment API Proxy Error:', err);
+      });
+      
+      // Log des réponses du serveur
+      proxy.on('proxyRes', (proxyRes: any) => {
+        console.log('Payment API Response Status:', proxyRes.statusCode);
+        // Ajout des en-têtes CORS à la réponse
+        proxyRes.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000';
+        proxyRes.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
+        proxyRes.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With';
+        proxyRes.headers['Access-Control-Allow-Credentials'] = 'true';
+      });
     }
   }
 };
 
 // Configuration CORS
 const corsConfig = {
-  origin: '*',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  origin: ['http://localhost:3000', 'https://api-pay.faroty.me'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Total-Count'],
+  credentials: true,
+  maxAge: 86400, // 24 heures
   preflightContinue: false,
-  optionsSuccessStatus: 204,
-  credentials: true
+  optionsSuccessStatus: 204
 };
 
 export default defineConfig({
@@ -98,13 +110,17 @@ export default defineConfig({
   server: {
     proxy: proxyConfig,
     cors: corsConfig,
-    host: '0.0.0.0',
     port: 3000,
+    host: '0.0.0.0',
     strictPort: true,
-    https: false,
     open: true,
+    // Suppression de https: false qui cause des problèmes de typage
     hmr: {
       overlay: true
+    },
+    fs: {
+      strict: true,
+      allow: ['..']
     }
   },
   resolve: {

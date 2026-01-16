@@ -69,11 +69,17 @@ export const authService = {
    *  ====================== */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
-      const response = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
+      // URL complète de l'API d'authentification
+      const loginUrl = 'https://api-prod.faroty.me/auth/api/auth/login';
+      
+      console.log('Login URL:', loginUrl);
+      console.log('Login Payload:', JSON.stringify(credentials, null, 2));
+      
+      const response = await fetch(loginUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
+          "Accept": "application/json",
           ...buildServiceHeaders(),
         },
         credentials: "include",
@@ -119,15 +125,20 @@ export const authService = {
    *  ====================== */
   async verifyOtp(credentials: VerifyOtpRequest): Promise<VerifyOtpResponse> {
     try {
-      const response = await fetch(API_ENDPOINTS.AUTH.VERIFY_OTP, {
+      // URL complète pour la vérification OTP
+      const verifyOtpUrl = 'https://api-prod.faroty.me/auth/api/auth/verify-otp';
+      
+      console.log('Verify OTP URL:', verifyOtpUrl);
+      console.log('Verify OTP Payload:', JSON.stringify(credentials, null, 2));
+      
+      const response = await fetch(verifyOtpUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
+          "Accept": "application/json",
           ...buildServiceHeaders(),
         },
         body: JSON.stringify(credentials),
-        mode: "cors",
         credentials: "include",
       });
 

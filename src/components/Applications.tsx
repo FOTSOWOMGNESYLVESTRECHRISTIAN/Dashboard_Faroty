@@ -1,6 +1,8 @@
 // src/pages/admin/Application.tsx
 import React, { useState, useEffect, useMemo } from "react";
-import { Plus, Edit, Trash, Filter, Download, Search, Check, Clock, Infinity } from "lucide-react";
+import { Plus, Edit, Trash, Filter, Download, Search, Check, Clock, Infinity, MoreVertical, PauseCircle, CheckCircle, Loader2, Eye } from "lucide-react";
+import { Application } from "../services/applicationService";
+import { MouseEvent } from "react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/dialog";
 import { Input } from "../components/ui/input";
@@ -75,7 +77,16 @@ interface ApplicationsProps {
 }
 
 export function Applications({ onViewDetails }: ApplicationsProps) {
-  const [applications, setApplications] = useState<Application[]>([]);
+  // Étendre l'interface Application pour inclure les propriétés manquantes
+  interface ExtendedApplication extends Application {
+    hasTrialPolicy?: boolean;
+    trialPolicyEnabled?: boolean;
+    trialPeriodDays?: number;
+    trialEndDate?: string;
+    [key: string]: any; // Pour les propriétés supplémentaires
+  }
+
+  const [applications, setApplications] = useState<ExtendedApplication[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Pagination
@@ -87,11 +98,12 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  const [selectedApp, setSelectedApp] = useState<Application | null>(null);
+  const [selectedApp, setSelectedApp] = useState<ExtendedApplication | null>(null);
 
   // Form
   const [formData, setFormData] = useState<ApplicationPayload>(buildEmptyForm());
   const [searchTerm, setSearchTerm] = useState("");
+  const [actionLoading, setActionLoading] = useState<{ [key: string]: boolean }>({});
   const [statusFilter, setStatusFilter] = useState<StatusFilterType>("all");
   const [isExporting, setIsExporting] = useState(false);
 
@@ -159,15 +171,39 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
     if (!selectedApp) return;
 
     try {
+      setActionLoading(prev => ({ ...prev, [selectedApp.id]: true }));
       await applicationService.deleteApplication(selectedApp.id);
-
-      setApplications(prev => prev.filter(app => app.id !== selectedApp.id));
-
-      toast.success("Application supprimée !");
+      setApplications(applications.filter((a) => a.id !== selectedApp.id));
+      toast.success("Application supprimée avec succès");
       setIsDeleteOpen(false);
+      setSelectedApp(null);
+    } catch (err) {
+      console.error("Erreur lors de la suppression:", err);
+      toast.error("Erreur lors de la suppression");
+    } finally {
+      if (selectedApp) {
+        setActionLoading(prev => ({ ...prev, [selectedApp.id]: false }));
+      }
+    }
+  };
 
-    } catch (err: any) {
-      toast.error(err?.message || "Erreur lors de la suppression");
+  const handleSuspendApplication = async (app: ExtendedApplication) => {
+    try {
+      setActionLoading(prev => ({ ...prev, [app.id]: true }));
+      // Le service gère maintenant le nettoyage des champs immuables,
+      // on peut donc passer l'objet avec les modifications souhaitées.
+      const updated = await applicationService.updateApplication(app.id, {
+        ...app,
+        isActive: false,
+        status: 'inactive'
+      });
+      setApplications(prev => prev.map(a => a.id === app.id ? { ...a, ...updated } : a));
+      toast.success("Application suspendue avec succès");
+    } catch (err) {
+      console.error("Erreur lors de la suspension:", err);
+      toast.error("Erreur lors de la suspension");
+    } finally {
+      setActionLoading(prev => ({ ...prev, [app.id]: false }));
     }
   };
 
@@ -343,7 +379,7 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
             {statusFilter === "all" && <div className="h-8"></div>}
           </div>
         </div>
-        
+
         <div className="p-6">
           {/* Grille d'applications */}
           {loading ? (
@@ -357,7 +393,7 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 p-2 border-b border-slate-200 mb-6">
               {currentItems.map((app) => (
-                <div 
+                <div
                   key={app.id}
                   className="group relative flex flex-col items-center p-4 rounded-xl transition-all duration-300 bg-white 
                     border-2 border-blue-400 hover:border-blue-600 
@@ -367,6 +403,160 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
                   onClick={() => onViewDetails?.(app)}
                   style={{ cursor: 'pointer' }}
                 >
+                  {/* Actions Menu - Always visible and with z-index */}
+                  <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => e.stopPropagation()}
+                          disabled={actionLoading[app.id]}
+                          className="h-8 w-8 bg-white/50 hover:bg-white shadow-sm"
+                          style={{ cursor: 'pointer' }}
+                        >
+                          {actionLoading[app.id] ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <MoreVertical className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onViewDetails?.(app);
+                          }}
+                          className="cursor-pointer"
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          <span>Voir détail</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedApp(app);
+                            // Populate form data for editing
+                            setFormData({
+                              name: app.name,
+                              description: app.description || "",
+                              version: app.version || "",
+                              type: app.type || "",
+                              platform: app.platform || "",
+                              iconUrl: app.iconUrl || "",
+                              websiteUrl: app.websiteUrl || "",
+                              supportEmail: app.supportEmail || "",
+                              documentationUrl: app.documentationUrl || "",
+                              configuration: app.configuration || null,
+                              isActive: app.isActive,
+                              status: app.status
+                            });
+                            setIsEditOpen(true);
+                          }}
+                          className="cursor-pointer"
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <Edit className="mr-2 h-4 w-4" />
+                          <span>Modifier</span>
+                        </DropdownMenuItem>
+
+                        {app.status === 'active' ? (
+                          <DropdownMenuItem
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              await handleSuspendApplication(app);
+                            }}
+                            className="text-amber-600 cursor-pointer"
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <PauseCircle className="mr-2 h-4 w-4" />
+                            <span>Suspendre</span>
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              try {
+                                // Le service gère le nettoyage, simplification du code
+                                const updated = await applicationService.updateApplication(app.id, {
+                                  ...app,
+                                  isActive: true,
+                                  status: 'active'
+                                });
+                                setApplications(prev => prev.map(a => a.id === app.id ? { ...a, ...updated } : a));
+                                toast.success("Application activée avec succès");
+                              } catch (err) {
+                                console.error("Erreur lors de l'activation:", err);
+                                toast.error("Erreur lors de l'activation");
+                              }
+                            }}
+                            className="text-green-600 cursor-pointer"
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <CheckCircle className="mr-2 h-4 w-4" />
+                            <span>Activer</span>
+                          </DropdownMenuItem>
+                        )}
+
+                        <DropdownMenuItem
+                          onClick={async (e: React.MouseEvent<HTMLDivElement>) => {
+                            e.stopPropagation();
+                            setSelectedApp(app);
+                            setIsDeleteOpen(true);
+                          }}
+                          className="text-red-600 cursor-pointer"
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <Trash className="mr-2 h-4 w-4" />
+                          <span>Supprimer</span>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          className="text-blue-600 hover:bg-blue-50 cursor-pointer"
+                          onClick={async (e: MouseEvent) => {
+                            e.stopPropagation();
+                            try {
+                              const endDate = new Date();
+                              endDate.setDate(endDate.getDate() + 30); // 30 jours d'essai
+
+                              // Utiliser le service de politique d'essai
+                              await applicationService.createOrUpdateTrialPolicy({
+                                applicationId: app.id,
+                                enabled: true,
+                                trialPeriodInDays: 30,
+                                unlimitedAccess: false
+                              });
+
+                              // Mettre à jour l'état local
+                              setApplications(prev => prev.map(a =>
+                                a.id === app.id
+                                  ? {
+                                    ...a,
+                                    hasTrialPolicy: true,
+                                    trialPolicyEnabled: true,
+                                    trialPeriodDays: 30,
+                                    trialEndDate: endDate.toISOString()
+                                  }
+                                  : a
+                              ));
+
+                              toast.success("Période d'essai de 30 jours ajoutée");
+                            } catch (err) {
+                              console.error("Erreur lors de l'ajout de la période d'essai:", err);
+                              toast.error("Erreur lors de l'ajout de la période d'essai");
+                            }
+                          }}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <Infinity className="mr-2 h-4 w-4" />
+                          <span>Ajouter une période d'essai</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
                   {/* Cercle avec les initiales */}
                   <div className="relative mb-3 group-hover:scale-105 transition-transform duration-300">
                     <div className="h-24 w-24 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 
@@ -375,7 +565,7 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
                       transition-all duration-300 shadow-md group-hover:shadow-lg group-hover:shadow-blue-200">
                       {getInitials(app.name)}
                     </div>
-                    
+
                     {/* Badge d'état */}
                     {app.hasTrialPolicy && app.trialPolicyEnabled && (
                       <div className="absolute -top-1 -right-1 p-1.5 bg-white rounded-full shadow-md group-hover:scale-110 transition-transform">
@@ -383,7 +573,8 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
                       </div>
                     )}
                   </div>
-                  
+
+
                   {/* Nom de l'application */}
                   <div className="text-center w-full">
                     <h3 className="font-medium text-slate-900 truncate group-hover:text-blue-600 transition-colors duration-200">
@@ -393,19 +584,20 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
                       <p className="text-xs text-slate-500 group-hover:text-blue-400 transition-colors duration-200">
                         v{app.version}
                       </p>
-                    )}
+                    )
+                    }
                   </div>
                 </div>
               ))}
             </div>
           )}
-          
-          
+
           {!loading && (
             <div className="text-left px-6 py-3 text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200 p-2 border-b border-slate-200 mb-6 mt-6">
               {filteredApplications.length} application{filteredApplications.length !== 1 ? 's' : ''} correspondant{filteredApplications.length > 1 ? 's' : ''} à vos critères.
             </div>
-          )}
+          )
+          }
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between px-8 py-4 bg-white/80 gap-3">
@@ -419,6 +611,7 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
               className="rounded-full px-6"
               disabled={currentPage === 1}
               onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+              style={{cursor: 'pointer'}}
             >
               Précédent
             </Button>
@@ -427,14 +620,15 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
               className="rounded-full px-6"
               disabled={currentPage === totalPages || totalPages === 0}
               onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+              style={{cursor: 'pointer'}}
             >
               Suivant
             </Button>
           </div>
         </div>
-      </div>
+      </div >
       {/* ADD DIALOG */}
-      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+      < Dialog open={isAddOpen} onOpenChange={setIsAddOpen} >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Ajouter une application</DialogTitle>
@@ -529,13 +723,13 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
           </div>
 
           <DialogFooter>
-            <Button onClick={handleAddApplication}>Ajouter</Button>
+            <Button onClick={handleAddApplication} style={{cursor: 'pointer'}}>Ajouter</Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog >
 
       {/* EDIT DIALOG */}
-      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+      < Dialog open={isEditOpen} onOpenChange={setIsEditOpen} >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Modifier l'application</DialogTitle>
@@ -628,10 +822,10 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
             <Button onClick={handleEditApplication}>Sauvegarder</Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog >
 
       {/* DELETE DIALOG */}
-      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+      < Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen} >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Supprimer l'application</DialogTitle>
@@ -647,9 +841,9 @@ export function Applications({ onViewDetails }: ApplicationsProps) {
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog >
 
-    </div>
+    </div >
   );
 }
 

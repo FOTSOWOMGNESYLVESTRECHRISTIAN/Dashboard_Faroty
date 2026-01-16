@@ -1,0 +1,4507 @@
+{
+	"info": {
+		"_postman_id": "1c5ace75-7e0d-4ffa-a41b-7f99099bbc4a",
+		"name": "FAROTY",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18326224",
+		"_collection_link": "https://lively-sunset-531610.postman.co/workspace/SpringBoot~af293fc2-f5ca-491d-b9dc-90a7177e9746/collection/18326224-1c5ace75-7e0d-4ffa-a41b-7f99099bbc4a?action=share&source=collection_link&creator=18326224"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "sessions",
+					"item": [
+						{
+							"name": "Usersessions",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/sessions/my-sessions",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"sessions",
+										"my-sessions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete-sessions",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/sessions/a6bdad8f-76b3-4c15-a570-0e0c39caa89e",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"sessions",
+										"a6bdad8f-76b3-4c15-a570-0e0c39caa89e"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "updateContact",
+					"item": [
+						{
+							"name": "initiate-update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"newEmail\":\"\",\n    \"newPhoneNumber\":\"+33687654399\",\n    \"currentContact\":\"+33687654321\",\n    \"contactType\":\"PHONE\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9090/api/contact-update/initiate",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"contact-update",
+										"initiate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "validate-otp",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"name": "cache-control",
+										"type": "text"
+									},
+									{
+										"key": "Postman-Token",
+										"value": "<calculated when request is sent>",
+										"name": "postman-token",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"name": "content-type",
+										"type": "text"
+									},
+									{
+										"key": "Content-Length",
+										"value": "<calculated when request is sent>",
+										"name": "content-length",
+										"type": "text"
+									},
+									{
+										"key": "Host",
+										"value": "<calculated when request is sent>",
+										"name": "host",
+										"type": "text"
+									},
+									{
+										"key": "User-Agent",
+										"value": "PostmanRuntime/7.39.1",
+										"name": "user-agent",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"name": "accept",
+										"type": "text"
+									},
+									{
+										"key": "Accept-Encoding",
+										"value": "gzip, deflate, br",
+										"name": "accept-encoding",
+										"type": "text"
+									},
+									{
+										"key": "Connection",
+										"value": "keep-alive",
+										"name": "connection",
+										"type": "text"
+									},
+									{
+										"key": "c",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9090/api/contact-update/validate-otp?otpReference=CONTACT_UPDATE_814b338cbd084565&otpCode=23617",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"contact-update",
+										"validate-otp"
+									],
+									"query": [
+										{
+											"key": "otpReference",
+											"value": "CONTACT_UPDATE_814b338cbd084565"
+										},
+										{
+											"key": "otpCode",
+											"value": "23617"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "complite",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/contact-update/complete?otpReference=CONTACT_UPDATE_89943f488b41423c",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"contact-update",
+										"complete"
+									],
+									"query": [
+										{
+											"key": "otpReference",
+											"value": "CONTACT_UPDATE_89943f488b41423c"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/contact-update/status/CONTACT_UPDATE_89943f488b41423c",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"contact-update",
+										"status",
+										"CONTACT_UPDATE_89943f488b41423c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "active-requeste",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/contact-update/active-requests",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"contact-update",
+										"active-requests"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "can-activate",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/contact-update/can-initiate?contactType=PHONE",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"contact-update",
+										"can-initiate"
+									],
+									"query": [
+										{
+											"key": "contactType",
+											"value": "PHONE"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "resent-otp",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/contact-update/resend-otp?otpReference=CONTACT_UPDATE_89943f488b41423c",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"contact-update",
+										"resend-otp"
+									],
+									"query": [
+										{
+											"key": "otpReference",
+											"value": "CONTACT_UPDATE_89943f488b41423c"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "cancel",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/contact-update/cancel?otpReference=CONTACT_UPDATE_89943f488b41423c",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"contact-update",
+										"cancel"
+									],
+									"query": [
+										{
+											"key": "otpReference",
+											"value": "CONTACT_UPDATE_89943f488b41423c"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "guest",
+					"item": [
+						{
+							"name": "store-guest",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"deviceId\": \"unique-device-id\",\n  \"userAgent\": \"Mozilla/5.0...\",\n  \"ipAddress\": \"192.168.1.1\",\n  \"language\": \"fr\",\n  \"country\": \"FR\",\n  \"platform\": \"android\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9090/api/guest/store",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"guest",
+										"store"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "users",
+					"item": [
+						{
+							"name": "users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2MDgwOTFkMi00MzZjLTQ0NzctOGRiNi0wYTM2MmFkNDI1MDUiLCJzaWQiOiJhZTEzYjlhNC04Y2IwLTQ0MzktYTk2ZC04ZTE3MzQzNWFlNDYiLCJkZXZpY2VJZCI6ImZkYmE1Y2MzLWYzZDgtNGYyZi04MDFiLTdlMzQzOGRmZmZmYiIsImVtYWlsIjoiYWRtaW5AZmFyb3R5LmNvbSIsInBob25lTnVtYmVyIjoiKzMzNjEyMzQ1Njc4Iiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUwODM5ODY4LCJpYXQiOjE3NTA3NTM0Njh9.Vdzmq6_RVmOnOvnETq3flplh_F8hkCiYVFLp1i4nI74",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/users",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add-contact",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \"contact\": \"+33676543210\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9090/api/contacts/add",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"contacts",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "verify-otp",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"contact\": \"user@example.com\",\n  \"otpCode\": \"13010\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9090/api/contacts/verify",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"contacts",
+										"verify"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "kyc",
+					"item": [
+						{
+							"name": "submit-kyc",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"fullName\": \"Jean Dupont\",\n  \"profilePictureUrl\": \"https://example.com/profile.jpg\",\n  \"identificationType\": \"CNI\",\n  \"frontImageUrl\": \"https://example.com/cni-front.jpg\",\n  \"backImageUrl\": \"https://example.com/cni-back.jpg\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9090/api/kyc",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"kyc"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get-submitted-kyc",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/kyc",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"kyc"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "has-verification",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/kyc/has-verification",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"kyc",
+										"has-verification"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "verified",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/kyc/is-verified",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"kyc",
+										"is-verified"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "approve-kyc",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2MDgwOTFkMi00MzZjLTQ0NzctOGRiNi0wYTM2MmFkNDI1MDUiLCJzaWQiOiJhZTEzYjlhNC04Y2IwLTQ0MzktYTk2ZC04ZTE3MzQzNWFlNDYiLCJkZXZpY2VJZCI6ImZkYmE1Y2MzLWYzZDgtNGYyZi04MDFiLTdlMzQzOGRmZmZmYiIsImVtYWlsIjoiYWRtaW5AZmFyb3R5LmNvbSIsInBob25lTnVtYmVyIjoiKzMzNjEyMzQ1Njc4Iiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUwODM5ODY4LCJpYXQiOjE3NTA3NTM0Njh9.Vdzmq6_RVmOnOvnETq3flplh_F8hkCiYVFLp1i4nI74",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/kyc/0ac1322e-67fd-4ddb-8d5e-f0f91f36899f/verify",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"kyc",
+										"0ac1322e-67fd-4ddb-8d5e-f0f91f36899f",
+										"verify"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "submit",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/kyc/submit",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"kyc",
+										"submit"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Media",
+					"item": [
+						{
+							"name": "import-one",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/Users/mac/Desktop/Screenshot 2025-06-19 at 16.26.24.png"
+										},
+										{
+											"key": "mediaType",
+											"value": "PROFILE_PICTURE",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:9090/api/media/import",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"media",
+										"import"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "media-type",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/media/types",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"media",
+										"types"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "definePin",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}/auth/api/users/b2a58a83-f4c3-4c0d-a4b8-580257c05a07/pin-code?pinCode=00111",
+									"host": [
+										"{{base-url}}"
+									],
+									"path": [
+										"auth",
+										"api",
+										"users",
+										"b2a58a83-f4c3-4c0d-a4b8-580257c05a07",
+										"pin-code"
+									],
+									"query": [
+										{
+											"key": "pinCode",
+											"value": "00111"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "verifypinInApp",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-Service-Key",
+										"value": "040801f1bd80e051ea437ff0b993e0e2afb851c92a4085a4a4965006c0b8311c",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base-url}}/auth/api/public/users/b2a58a83-f4c3-4c0d-a4b8-580257c05a07/pin-code/verify?pinCode=00111",
+									"host": [
+										"{{base-url}}"
+									],
+									"path": [
+										"auth",
+										"api",
+										"public",
+										"users",
+										"b2a58a83-f4c3-4c0d-a4b8-580257c05a07",
+										"pin-code",
+										"verify"
+									],
+									"query": [
+										{
+											"key": "pinCode",
+											"value": "00111"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getUser",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "getOrCreate",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"contact\": \"tsagueyvesthibaut@gmail.com\", \n  \"deviceInfo\": {\n    \"deviceId\": \"device-1234\",\n    \"deviceType\": \"MOBILE\",\n    \"deviceModel\": \"iPhone de Mac\",\n    \"osName\":\"tester\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/auth/api/auth/login",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"auth",
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify-otp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"otpCode\": \"87237\",                 // le code OTP reçu (regarde dans les logs si en mode dev)\n  \"tempToken\": \"2e9cd256-1598-41a2-ae48-41b1dd34a0b5\", // celui reçu à l’étape 1\n  \"deviceInfo\": {\n    \"deviceId\": \"device-1234\",\n    \"deviceType\": \"MOBILE\",\n    \"deviceModel\": \"iPhone de Mac\",\n    \"osName\":\"tester\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/auth/api/auth/verify-otp",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"auth",
+								"api",
+								"auth",
+								"verify-otp"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "plan-service",
+			"item": [
+				{
+					"name": "plan",
+					"item": [
+						{
+							"name": "create-plan",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Plan Premium Global\",\n    \"type\": \"SERVICE_SPECIFIC\",\n    \"targetServiceId\":\"436e99d2-3aab-43ca-b03a-191c267960c8\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8085/api/v1/plans",
+									"host": [
+										"localhost"
+									],
+									"port": "8085",
+									"path": [
+										"api",
+										"v1",
+										"plans"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get-all-plan",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8085/api/v1/plans",
+									"host": [
+										"localhost"
+									],
+									"port": "8085",
+									"path": [
+										"api",
+										"v1",
+										"plans"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "plan-configuration",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"planId\": \"290fc860-8221-463e-8d30-7849573d44a3\",\n  \"version\": 1,\n  \"pricingConfig\": \"{\\\"price\\\": 10}\",\n  \"quotasConfig\": \"{\\\"sms\\\": 1000}\",\n  \"utilityQuotasConfig\": \"{\\\"support\\\": 5}\",\n  \"validFrom\": \"2024-01-01T00:00:00\",\n  \"validTo\": \"2024-12-31T23:59:59\",\n  \"isActive\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8085/api/v1/plan-configurations",
+									"host": [
+										"localhost"
+									],
+									"port": "8085",
+									"path": [
+										"api",
+										"v1",
+										"plan-configurations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "all-config-for-specifiq-plan-config",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8085/api/v1/plan-configurations/plan/afc754b7-0d33-4a43-b493-4fcf3648a58b",
+									"host": [
+										"localhost"
+									],
+									"port": "8085",
+									"path": [
+										"api",
+										"v1",
+										"plan-configurations",
+										"plan",
+										"afc754b7-0d33-4a43-b493-4fcf3648a58b"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "get-service",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8085/api/v1/services",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"api",
+								"v1",
+								"services"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create-serice",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\":\"CROWFUNDING\",\n    \"name\":\"Service crowfunding\",\n    \"description\":\"Service de levee de fond\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8085/api/v1/services",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"api",
+								"v1",
+								"services"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "subcription",
+			"item": [
+				{
+					"name": "Applications",
+					"item": [
+						{
+							"name": "create-applications",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Crowdfunding\",\n  \"description\": \"Application de levee de fond\",\n  \"version\": \"1.0.0\",\n  \"type\": \"web\",\n  \"platform\": \"web\",\n  \"iconUrl\": \"http://example.com/icon.png\",\n  \"websiteUrl\": \"http://example.com\",\n  \"supportEmail\": \"support@example.com\",\n  \"documentationUrl\": \"http://example.com/docs\"\n//   \"configuration\": {\n//     \"key\": \"value\"\n//   }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/applications",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"applications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "list-applications",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/applications",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"applications"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Microservice",
+					"item": [
+						{
+							"name": "list-microservices",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/microservices",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"microservices"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create-microservice",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"SMS\",\n  \"description\": \"Service d'envoi des SMS\",\n  \"version\": \"1.0.0\",\n  \"baseUrl\": \"http://localhost:8080\",\n//   \"healthCheckUrl\": \"http://localhost:8080/health\",\n  \"status\": \"running\"\n//   \"configuration\": {\n//     \"key\": \"value\"\n//   }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/microservices",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"microservices"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "subscription-users",
+					"item": [
+						{
+							"name": "subcription-user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/subscriptions",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "consume-quotas",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"applicationId\": \"uuid-de-l-application\", \n  \"featureName\": \"GENERATE_PDF\",\n  \"amount\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/subscriptions/consume-feature",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"subscriptions",
+										"consume-feature"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"applicationId\": \"6bf0fa1e-836d-41ec-a92a-68650782b394\",\n  \"planId\": \"6e47aa00-05d6-452a-a816-e3fdbad34ab6\",\n  \"billingCycle\": \"YEARLY\",\n  \"paymentMethod\": \"credit_card\",\n  \"autoRenew\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/subscriptions",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "user-subcription",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/subscription-users/user/550e8400-e29b-41d4-a716-446655440000",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"subscription-users",
+										"user",
+										"550e8400-e29b-41d4-a716-446655440000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOrActiveSubscription",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8087/souscription/api/v1/subscriptions/context/550e8400-e29b-41d4-a716-446655440003/GROUP/get-or-create?applicationId=713e43fa-1f72-479b-b7dc-d691924f4c38",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"souscription",
+										"api",
+										"v1",
+										"subscriptions",
+										"context",
+										"550e8400-e29b-41d4-a716-446655440003",
+										"GROUP",
+										"get-or-create"
+									],
+									"query": [
+										{
+											"key": "applicationId",
+											"value": "713e43fa-1f72-479b-b7dc-d691924f4c38"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "consume-with-apikey",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"apiKey\": \"ak_b3ad64f776cf4829b948e67ed7649b16_1752832255029\",\n  \"featureName\": \"email_sending\",\n  \"amount\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/subscriptions/consume-feature-with-api-key",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"subscriptions",
+										"consume-feature-with-api-key"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "api-key",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"applicationId\": \"ffff4da4-7141-4d95-a5d3-47f16cbb16d4\",\n  \"quotaPerHour\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/api-keys",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"api-keys"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "RegenerateKey",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/api-keys/b7da032d-fbff-45e7-ae42-4582cc261219/regenerate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"api-keys",
+										"b7da032d-fbff-45e7-ae42-4582cc261219",
+										"regenerate"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "subscription-application",
+					"item": [
+						{
+							"name": "subcription-application",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"applicationId\": \"3cbfc392-dea4-438d-8b49-d7ac6b9bab29\",\n  \"microserviceId\": \"552480d1-a767-41de-aba3-f6a259c5f897\",\n  \"microservicePlanId\": \"fac3e97e-4214-4c31-9f39-b246cc222f92\",\n  \"startDate\": \"2025-06-30\",\n  \"endDate\": \"2025-09-30\",\n  \"quotaLimit\": 1000000,\n  \"autoRenew\": true,\n  \"paymentMethod\": \"CREDIT_CARD\",\n  \"promotionCode\": \"SUMMER2024\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/subscription-applications",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"subscription-applications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAppSubcriptions",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/subscription-applications",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"subscription-applications"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "quota",
+					"item": [
+						{
+							"name": "consume-quotas",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"consumptionAmount\": 1,\n  \"description\": \"Appel API notification\",\n  \"endpoint\": \"/api/notifications/send\",\n  \"userAgent\": \"Mozilla/5.0...\",\n  \"serviceName\": \"notification-service\",\n  \"operationType\": \"POST\",\n  \"subscriptionApplicationId\": \"0eb1372b-8864-40e5-94d0-4c9708f6e06f\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/quota-consumption-logs",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"quota-consumption-logs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "trialPolicy",
+					"item": [
+						{
+							"name": "createTrailPolicy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"applicationId\": \"9c01ebe9-af58-48c2-9736-6bae862d7beb\",\n  \"enabled\": true,\n  \"trialPeriodInDays\": 90,\n  \"unlimitedAccess\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/trial-policies",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"trial-policies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "NOtificationLog",
+					"item": [
+						{
+							"name": "getAllLogsNotification",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/notification-logs",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"notification-logs"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "apiKeys",
+			"item": [
+				{
+					"name": "clients",
+					"item": [
+						{
+							"name": "get-clients",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8087/api/v1/clients",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"api",
+										"v1",
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create-client",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Entreprise ABC\",\n  \"email\": \"contact@entreprise-abc.com\",\n  \"company\": \"ABC Corp\",\n  \"contactPerson\": \"Jean Dupont\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8087/api/v1/clients",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"api",
+										"v1",
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "activer-client",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8087/api/v1/clients/911317c6-86bd-4e88-99ee-f0b3ea5c231e/activate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"api",
+										"v1",
+										"clients",
+										"911317c6-86bd-4e88-99ee-f0b3ea5c231e",
+										"activate"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "api-key",
+					"item": [
+						{
+							"name": "create-api-keys",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"clientId\": \"30fd3085-1e39-4dc8-ba56-79074b0387fb\",\n  \"name\": \"Clé API Production\",\n  \"description\": \"Clé API pour l'environnement de production\",\n  \"permissions\": [\n    {\n      \"serviceName\": \"user-service\",\n      \"endpointPattern\": \"/api/users/*\",\n      \"methods\": [\"GET\", \"POST\", \"PUT\"],\n      \"scope\": \"READ_WRITE\"\n    },\n    {\n      \"serviceName\": \"product-service\",\n      \"endpointPattern\": \"/api/products/*\",\n      \"methods\": [\"GET\"],\n      \"scope\": \"READ_WRITE\"\n    }\n  ],\n  \"rateLimit\": {\n    \"maxRequests\": 1000,\n    \"timeWindow\": \"PT1H\",\n    \"description\": \"1000 requêtes par heure\"\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8087/api/v1/apikeys",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"api",
+										"v1",
+										"apikeys"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "validate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8087/api/v1/apikeys/validate/ak_Fr1rG3hAt-ZzKiAqNs2uB-ishZoTreSl",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"api",
+										"v1",
+										"apikeys",
+										"validate",
+										"ak_Fr1rG3hAt-ZzKiAqNs2uB-ishZoTreSl"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "New request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "client",
+					"item": [
+						{
+							"name": "add-cleint",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"type": "text"
+									},
+									{
+										"key": "Postman-Token",
+										"value": "<calculated when request is sent>",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Length",
+										"value": "<calculated when request is sent>",
+										"type": "text"
+									},
+									{
+										"key": "Host",
+										"value": "<calculated when request is sent>",
+										"type": "text"
+									},
+									{
+										"key": "User-Agent",
+										"value": "PostmanRuntime/7.39.1",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"type": "text"
+									},
+									{
+										"key": "Accept-Encoding",
+										"value": "gzip, deflate, br",
+										"type": "text"
+									},
+									{
+										"key": "Connection",
+										"value": "keep-alive",
+										"type": "text"
+									},
+									{
+										"key": "accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":\"72cc199c-f2fc-478c-a799-c51428c2fa5f\",\n    \"clientId\": \"EDUPOWER\",\n    \"name\": \"EDUPOWER\",\n    \"description\": \"Edupower youth foundation\",\n    \"contactEmail\": \"contact@edupoweryouthfoundation.org\",\n    // \"contactPhone\": \"+33 1 23 45 67 89\",\n    \"website\": \"https://edupoweryouthfoundation.org/\",\n    \"address\": \"SOUDAN\",\n    \"city\": \"soudan\",\n    \"postalCode\": \"00000\",\n    \"country\": \"Soudan\"\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://notification.faroty.com/notification-service/api/v1/clients",
+									"protocol": "https",
+									"host": [
+										"notification",
+										"faroty",
+										"com"
+									],
+									"path": [
+										"notification-service",
+										"api",
+										"v1",
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllClient",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8084/notification-service/api/v1/clients",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8084",
+									"path": [
+										"notification-service",
+										"api",
+										"v1",
+										"clients"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "template",
+					"item": [
+						{
+							"name": "create-template",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "d",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "d",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"templateCode\": \"EPASS_INVITATION\",\n    \"templateName\": \"Notification for Invitation epass\",\n    \"templateDescription\": \"Notification for Invitation epass\",\n    \"clientId\": \"FAROTY\",\n    \"notificationType\": \"EMAIL\",\n    \"languageCode\": \"fr\",\n    \"subjectTemplate\": \"Invitation ticket - ePass\",\n    \"contentTemplate\": \"Invitation ticket - ePass\",\n    \"htmlTemplate\": \"<!DOCTYPE html>\\n<html lang=\\\"fr\\\">\\n<head>\\n    <meta charset=\\\"UTF-8\\\">\\n    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n    <title>Invitation à rejoindre une organisation</title>\\n    <style>\\n        body {\\n            margin: 0;\\n            padding: 0;\\n            font-family: 'Arial', sans-serif;\\n            background-color: #004f71;\\n        }\\n        .email-container {\\n            max-width: 600px;\\n            margin: 20px auto;\\n            background-color: #ffffff;\\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);\\n        }\\n        .header {\\n            background-color: #ffffff;\\n            padding: 30px 20px;\\n            text-align: center;\\n        }\\n        .header img {\\n            max-width: 200px;\\n            height: auto;\\n        }\\n        .content {\\n            padding: 40px 30px;\\n            color: #000000;\\n        }\\n        .content h1 {\\n            color: #004f71;\\n            font-size: 24px;\\n            margin-bottom: 20px;\\n            margin-top: 0;\\n        }\\n        .content p {\\n            font-size: 16px;\\n            line-height: 1.6;\\n            margin-bottom: 20px;\\n        }\\n        .invitation-box {\\n            background-color: #f9f9f9;\\n            border: 2px solid #ffcb05;\\n            border-radius: 8px;\\n            padding: 25px;\\n            margin: 30px 0;\\n        }\\n        .invitation-details {\\n            margin: 15px 0;\\n        }\\n        .invitation-details strong {\\n            color: #004f71;\\n        }\\n        .cta-button {\\n            display: inline-block;\\n            background-color: #004f71;\\n            color: #ffffff;\\n            text-decoration: none;\\n            padding: 15px 40px;\\n            border-radius: 5px;\\n            font-size: 16px;\\n            font-weight: bold;\\n            margin: 20px 0;\\n            text-align: center;\\n        }\\n        .cta-button:hover {\\n            background-color: #003a52;\\n        }\\n        .button-container {\\n            text-align: center;\\n            margin: 30px 0;\\n        }\\n        .info-box {\\n            background-color: #fff9e6;\\n            border-left: 4px solid #ffcb05;\\n            padding: 15px;\\n            margin: 20px 0;\\n            font-size: 14px;\\n            color: #000000;\\n        }\\n        .role-badge {\\n            display: inline-block;\\n            background-color: #ffcb05;\\n            color: #000000;\\n            padding: 5px 15px;\\n            border-radius: 20px;\\n            font-size: 14px;\\n            font-weight: bold;\\n            margin: 10px 0;\\n        }\\n        .expiry-notice {\\n            font-size: 14px;\\n            color: #666;\\n            text-align: center;\\n            margin-top: 20px;\\n        }\\n        .footer {\\n            background-color: #ffffff;\\n            color: #000000;\\n            padding: 20px 30px;\\n            text-align: center;\\n            font-size: 14px;\\n            border-top: 2px solid #000000;\\n            margin: 0 30px;\\n        }\\n        .footer a {\\n            color: #004f71;\\n            text-decoration: none;\\n        }\\n    </style>\\n</head>\\n<body>\\n    <div class=\\\"email-container\\\">\\n        <!-- Header avec logo -->\\n        <div class=\\\"header\\\">\\n            <img src=\\\"{{logoUrl}}\\\"  style=\\\"width: 100%; height: 100%; object-fit: contain;\\\"  alt=\\\"Logo\\\">\\n        </div>\\n\\n        <!-- Contenu principal -->\\n        <div class=\\\"content\\\">\\n            <h1>🎉 Vous avez été invité !</h1>\\n            \\n            <p>Bonjour,</p>\\n            \\n            <p><strong>{{invitedByName}}</strong> vous invite à rejoindre son équipe de gestion sur notre plateforme.</p>\\n\\n            <div class=\\\"invitation-box\\\">\\n                <div class=\\\"invitation-details\\\">\\n                    <strong>Organisation :</strong> {{organizationName}}<br>\\n                    <strong>Invité par :</strong> {{invitedByName}}<br>\\n                    <strong>Rôle attribué :</strong> <span class=\\\"role-badge\\\">{{role}}</span>\\n                </div>\\n                \\n                <p style=\\\"margin-top: 20px; font-size: 14px; color: #666;\\\">\\n                    En acceptant cette invitation, vous pourrez aider à gérer les événements, les ventes de billets et d'autres aspects de l'organisation.\\n                </p>\\n            </div>\\n\\n            <div class=\\\"button-container\\\">\\n                <a href=\\\"{{invitationLink}}\\\" class=\\\"cta-button\\\">Accepter l'invitation</a>\\n            </div>\\n\\n            <p class=\\\"expiry-notice\\\">⏱️ Ce lien d'invitation est valide pendant <strong>7 jours</strong></p>\\n\\n            <div class=\\\"info-box\\\">\\n                <strong>ℹ️ Remarque :</strong> Si vous n'avez pas de compte, vous serez invité à en créer un. Si vous avez déjà un compte, connectez-vous avec vos identifiants habituels.\\n            </div>\\n\\n            <p style=\\\"font-size: 14px; color: #666; margin-top: 30px;\\\">\\n                Si vous ne souhaitez pas accepter cette invitation, vous pouvez simplement ignorer cet email.\\n            </p>\\n        </div>\\n\\n        <!-- Footer -->\\n        <div class=\\\"footer\\\">\\n            <p>&copy; 2025 Faroty. Tous droits réservés.</p>\\n            <p>\\n                <a href=\\\"https://www.faroty.com\\\">Visitez notre site</a> | \\n                <a href=\\\"mailto:support@faroty.com\\\">Nous contacter</a>\\n            </p>\\n        </div>\\n    </div>\\n</body>\\n</html>\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8085/notification/api/v1/templates",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8085",
+									"path": [
+										"notification",
+										"api",
+										"v1",
+										"templates"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllTemplate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8084/notification-service/api/v1/templates",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8084",
+									"path": [
+										"notification-service",
+										"api",
+										"v1",
+										"templates"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "templateOfClient",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8084/notification-service/api/v1/templates/client/ASSO_PLUS",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8084",
+									"path": [
+										"notification-service",
+										"api",
+										"v1",
+										"templates",
+										"client",
+										"ASSO_PLUS"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "validateTempate",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8084/notification-service/api/v1/templates/NEW_PLAN_SUCCESS/validate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8084",
+									"path": [
+										"notification-service",
+										"api",
+										"v1",
+										"templates",
+										"NEW_PLAN_SUCCESS",
+										"validate"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "email",
+					"item": [
+						{
+							"name": "send-email",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"clientCode\": \"STARSSARL\",\n    \"externalUserId\": \"user_123\",\n    \"lang\": \"fr\",\n    \"type\": \"EMAIL\",\n    \"recipientEmail\":\"tsagueyvesthibaut@gmail.com\",\n    \"templateCode\": \"STARSSARL_PAYMENT_CONFIRMATION\",\n    \"params\": {\n      \"month\": \"1234\",\n      \"civility\":\"tsgaue\",\n      \"code\":\"1qwl\"\n     \n    }\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8084/notification-service/api/v1/email/send",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8084",
+									"path": [
+										"notification-service",
+										"api",
+										"v1",
+										"email",
+										"send"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createConfigClient",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"clientId\": \"ASSO_PLUS\",\n    \"smtpHost\": \"smtp.gmail.com\",\n    \"smtpPort\": 587,\n    \"smtpUsername\": \"careforadamaoua@gmail.com\",\n    \"smtpPassword\": \"xbub amkj fosc jxfw\",\n    \"fromEmail\": \"careforadamaoua@gmail.com\",\n    \"fromName\": \"EDUPOWER Plus\",\n    \"replyToEmail\": \"careforadamaoua@gmail.com\",\n    \"useSsl\": false,\n    \"useTls\": true,\n    \"active\": true\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8084/notification-service/api/v1/email/config",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8084",
+									"path": [
+										"notification-service",
+										"api",
+										"v1",
+										"email",
+										"config"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "sms",
+					"item": [
+						{
+							"name": "New request",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"user\": \"theophile.tchuimbou@faroty.com\",\n\"password\": \"g5P7UXfYSQLGFdK\",\n\"senderid\": \"SENDER\",\n\"sms\": \"message teste MTN\",\n\"mobiles\": \"237677438521\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://smsvas.com/bulk/public/index.php/api/v1/sendsms",
+									"protocol": "https",
+									"host": [
+										"smsvas",
+										"com"
+									],
+									"path": [
+										"bulk",
+										"public",
+										"index.php",
+										"api",
+										"v1",
+										"sendsms"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "New request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "country",
+					"item": [
+						{
+							"name": "count",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"name": "cache-control",
+										"type": "text"
+									},
+									{
+										"key": "Postman-Token",
+										"value": "<calculated when request is sent>",
+										"name": "postman-token",
+										"type": "text"
+									},
+									{
+										"key": "Host",
+										"value": "<calculated when request is sent>",
+										"name": "host",
+										"type": "text"
+									},
+									{
+										"key": "User-Agent",
+										"value": "PostmanRuntime/7.39.1",
+										"name": "user-agent",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"name": "accept",
+										"type": "text"
+									},
+									{
+										"key": "Accept-Encoding",
+										"value": "gzip, deflate, br",
+										"name": "accept-encoding",
+										"type": "text"
+									},
+									{
+										"key": "Connection",
+										"value": "keep-alive",
+										"name": "connection",
+										"type": "text"
+									},
+									{
+										"key": "Accept-Language",
+										"value": "fr",
+										"type": "text"
+									},
+									{
+										"key": "",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8085/payments/api/v1/countries/count",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8085",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"countries",
+										"count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createCountry",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/countries",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"countries"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "paymentMethod",
+					"item": [
+						{
+							"name": "getall",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api-pay-prod.faroty.me/payments/api/v1/payment-methods",
+									"protocol": "https",
+									"host": [
+										"api-pay-prod",
+										"faroty",
+										"me"
+									],
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payment-methods"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Wave\",\n  \"slug\": \"mika\",\n  \"technicalName\": \"waves\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/payment-methods",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payment-methods"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddPaymentMethodToAccount",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"accountId\":\"edeea831-d6f1-45f1-b61c-58eb5c01c99d\",\n    \"paymentMethodId\":\"6673e966-607f-4a54-b3ce-8d000f96844c\"\n    \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/account-payment-methods",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"account-payment-methods"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Account",
+					"item": [
+						{
+							"name": "getAll",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/accounts",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AccountOfCountry",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/accounts/country/a6592ecf-9b56-451d-8d04-f6ee6806b481",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"accounts",
+										"country",
+										"a6592ecf-9b56-451d-8d04-f6ee6806b481"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createAccount",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{X-API-KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":\"abb40122-a10f-4bb6-b606-8681a4a38938\",\n    \"accountName\":\"Wave paypal\",\n    \"countryId\":\"5e550d14-a04c-4524-92ef-b2524ab74691\",\n    \"depositFeeRate\":\"1.2\",\n    \"withdrawalFeeRate\":\"0.0\",\n    \"accountMode\":\"live\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}/payments/api/v1/accounts",
+									"host": [
+										"{{base-url}}"
+									],
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "paymemtOfAccount",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/accounts/d946119b-0d50-4460-984c-54e8955f4260/payment-methods",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"accounts",
+										"d946119b-0d50-4460-984c-54e8955f4260",
+										"payment-methods"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAccountAndPaymentMethod",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":\"abb40122-a10f-4bb6-b606-8681a4a38938\",\n    \"accountName\":\"Wave paypa\",\n    \"countryId\":\"ffdfac40-af41-4a85-85bb-c409aa39e1a0\",\n    \"depositFeeRate\":\"1.2\",\n    \"withdrawalFeeRate\":\"0.0\",\n    \"accountMode\":\"live\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/9de75789-a03f-41c0-bd8e-211da5d3d89c",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"9de75789-a03f-41c0-bd8e-211da5d3d89c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Regenerer_keys",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "exchangeRate",
+					"item": [
+						{
+							"name": "sourceData",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://v6.exchangerate-api.com/v6/e5780621d8adca8644e0b335/latest/XAF",
+									"protocol": "https",
+									"host": [
+										"v6",
+										"exchangerate-api",
+										"com"
+									],
+									"path": [
+										"v6",
+										"e5780621d8adca8644e0b335",
+										"latest",
+										"XAF"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getExchangeRate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/exchange-rates",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"exchange-rates"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "exchangeRateOfTwoCurrency",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/exchange-rates/by-currencies/latest?sourceCurrencyCode=XAF&targetCurrencyCode=USD",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"exchange-rates",
+										"by-currencies",
+										"latest"
+									],
+									"query": [
+										{
+											"key": "sourceCurrencyCode",
+											"value": "XAF"
+										},
+										{
+											"key": "targetCurrencyCode",
+											"value": "USD"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "exhangeRateByDevise",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/exchange-rates/source/XAF",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"exchange-rates",
+										"source",
+										"XAF"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "convert",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/exchange-rates/convert?amount=10000&fromCurrency=XAF&toCurrency=USD",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"exchange-rates",
+										"convert"
+									],
+									"query": [
+										{
+											"key": "amount",
+											"value": "10000"
+										},
+										{
+											"key": "fromCurrency",
+											"value": "XAF"
+										},
+										{
+											"key": "toCurrency",
+											"value": "USD"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "wallets",
+					"item": [
+						{
+							"name": "getAllWallets",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/wallets",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"wallets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createWallet",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{X-API-KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"accountId\":\"b56a36e5-2201-48d1-b5d3-49e292b4cc9f\",\n    \"currencyCode\":\"XAF\",\n    \"walletType\":\"PERSONAL\",\n    \"legalIdentifier\":\"5bdf3222-fea0-4938-82a1-df2955516f25\",\n    \"refId\":\"8f7fd5c9-06fd-4f70-8699-e8bb8ce2e43d\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-api}}/api/v1/wallets",
+									"host": [
+										"{{base-api}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"wallets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOneById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/wallets/7ade1ef7-0775-44ae-ad04-df5477b4671a",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"wallets",
+										"7ade1ef7-0775-44ae-ad04-df5477b4671a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "addWalletOwner",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{X-API-KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://api-pay.faroty.me/payments/api/v1/wallet-owners/28ad4f85-bebd-4975-982d-8c4401deffd8/generate-otp?newUserId=ece83712-a721-4af9-8a66-222ce9eeef56&newUserType=ADMIN",
+									"protocol": "https",
+									"host": [
+										"api-pay",
+										"faroty",
+										"me"
+									],
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"wallet-owners",
+										"28ad4f85-bebd-4975-982d-8c4401deffd8",
+										"generate-otp"
+									],
+									"query": [
+										{
+											"key": "newUserId",
+											"value": "ece83712-a721-4af9-8a66-222ce9eeef56"
+										},
+										{
+											"key": "newUserType",
+											"value": "ADMIN"
+										},
+										{
+											"key": "x-api-key",
+											"value": "{{X-API-KEY}}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/wallet-owners/4063d551-445a-4f8a-b957-712e84acaeb5/generate-otp?newUserId=7fde1ef7-0775-44ae-ad04-df5477b4671a&newUserType=ADMIN",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"wallet-owners",
+										"4063d551-445a-4f8a-b957-712e84acaeb5",
+										"generate-otp"
+									],
+									"query": [
+										{
+											"key": "newUserId",
+											"value": "7fde1ef7-0775-44ae-ad04-df5477b4671a"
+										},
+										{
+											"key": "newUserType",
+											"value": "ADMIN"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "verifyWalletOwner",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{X-API-KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sessionToken\":\"6399219d330477f5de44cd002c8144376279ae1bf943bc6e42dc67d3e6baa28a\",\n    \"otpCode\":\"87566\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://api-pay.faroty.me/payments/api/v1/wallet-owners/validate-otp",
+									"protocol": "https",
+									"host": [
+										"api-pay",
+										"faroty",
+										"me"
+									],
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"wallet-owners",
+										"validate-otp"
+									],
+									"query": [
+										{
+											"key": "x-api-key",
+											"value": "{{X-API-KEY}}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "freeAmount",
+					"item": [
+						{
+							"name": "calculate",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"walletId\": \"9eb17f2e-ae7a-4fde-a9fc-555f0ee5a23c\",\n  \"amount\": 10,\n  \"paymentMethodSlug\": \"PAYPAL\",\n  \"transactionType\": \"DEPOSIT\",\n  \"userCurrency\":\"USD\"\n//   \"payWithWithdrawalFee\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/transaction-fees/calculate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"transaction-fees",
+										"calculate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "calulate-simple",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"walletId\": \"38f6f6a2-2575-48f7-9b2a-4d6b30503da7\",\n  \"amount\": 100,\n  \"paymentMethodSlug\": \"OM\",\n  \"transactionType\": \"DEPOSIT\",\n  \"userCurrency\":\"XAF\",\n  \"payWithWithdrawalFee\":true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/transaction-fees/calculate-simple",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"transaction-fees",
+										"calculate-simple"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Stripe",
+					"item": [
+						{
+							"name": "createPaymentIntent",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"walletId\": \"447face8-4f2b-4970-9707-2cca98f26bbe\",\n  \"amount\": 100.00,\n  \"currency\": \"USD\",\n  \"description\": \"Paiement pour wallet\",\n  \"customerEmail\": \"user@example.com\",\n  \"metadata\": \"custom_metadata\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/stripe/create-payment-intent",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"stripe",
+										"create-payment-intent"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "cache",
+					"item": [
+						{
+							"name": "clear",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "paymentSession",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"walletId\": \"38f6f6a2-2575-48f7-9b2a-4d6b30503da7\",\n  \"currencyCode\": \"XAF\",\n  \"cancelUrl\": \"/error\",\n  \"successUrl\": \"/success\",\n  \"type\":\"DEPOSIT\",\n  \"ipAddress\": \"1.1.1.1.1.1\",\n  \"amount\":1000\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/payment-sessions",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payment-sessions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getPaymentMethodeSession",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "session",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "getOneWithToken",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "getSessionDisplay",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/payment-sessions/token/ApWpJ3QQ4fgsbUi3pXKq36D6o3_xfAeT/display",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payment-sessions",
+										"token",
+										"ApWpJ3QQ4fgsbUi3pXKq36D6o3_xfAeT",
+										"display"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "validateSession",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "sd",
+										"value": "",
+										"type": "text"
+									},
+									{
+										"key": "dj",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/payments/initialization/validate/g_N5h5ZRv5Eo5nwwLmZUrra46CyE7Nba",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payments",
+										"initialization",
+										"validate",
+										"g_N5h5ZRv5Eo5nwwLmZUrra46CyE7Nba"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Payment",
+					"item": [
+						{
+							"name": "initializePayement",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sessionToken\":\"nc1-eHmxwLyInSDVeVrFOexXq5aTHp2v\",\n    \"selectedPaymentMethod\":\"CARD\",\n    \"preferredCurrency\":\"EUR\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/payments/initialization/initialize",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payments",
+										"initialization",
+										"initialize"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getConfirmationTransaction",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "webhook",
+					"item": [
+						{
+							"name": "webhookDelicery",
+							"item": [
+								{
+									"name": "retry",
+									"request": {
+										"method": "GET",
+										"header": []
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "createWebhook",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-Account-ID",
+										"value": "89afbeaa-b091-40a5-8cf6-4b923af15a78",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"url\": \"http://localhost:8082/payments/api/v1/webhooks/webhook-local\",\n  \"events\": [\n    \"TRANSACTION_CREATED\",\n    \"PAYMENT_SUCCESS\", \n    \"TRANSACTION_FAILED\"\n  ],\n  \"exclusive\": false,\n  \"allowMultiple\": true,\n  \"description\": \"Webhook de test pour les notifications de transaction\",\n  \"walletId\": null,\n  \"metadata\": {\n    \"applicationName\": \"Mon App Test\",\n    \"apiVersion\": \"v1\",\n    \"tags\": [\"test\", \"development\"],\n    \"customData\": \"Données personnalisées\"\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/webhooks",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"webhooks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "updateWebhook",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "OM-payment",
+					"item": [
+						{
+							"name": "createPayment",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"subscriberMsisdn\":\"693069958\",\n    \"sessionToken\":\"Nf66hZCZs7Gf5UmLwVzFAO02H6nVp5p8\",\n    \"payRef\":\"OM_1757081695793_B_\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/payments/orange/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payments",
+										"orange",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CheckStatus",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/payments/orange/status/MP25090589FCFEB59A6794DBC8CE",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payments",
+										"orange",
+										"status",
+										"MP25090589FCFEB59A6794DBC8CE"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "authenticate",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/payments/orange/authenticate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payments",
+										"orange",
+										"authenticate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "checkRefunStatus",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/payments/orange/refund/status/4f972932-0455-405d-a97a-edba3e9997ec",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payments",
+										"orange",
+										"refund",
+										"status",
+										"4f972932-0455-405d-a97a-edba3e9997ec"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "MOMO-payment",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sessionToken\":\"nc1-eHmxwLyInSDVeVrFOexXq5aTHp2v\",\n    \"selectedPaymentMethod\":\"CARD\",\n    \"preferredCurrency\":\"EUR\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/payments/momo/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payments",
+										"momo",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetUserInfo",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api-pay.faroty.me/payments/api/v1/payments/momo/verify-account/msisdn/677438521",
+									"protocol": "https",
+									"host": [
+										"api-pay",
+										"faroty",
+										"me"
+									],
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"payments",
+										"momo",
+										"verify-account",
+										"msisdn",
+										"677438521"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Withdrawal",
+					"item": [
+						{
+							"name": "initialize",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sessionToken\":\"jHqfFa5AlANCBxyEKFOcLT2DPHcSOc84\",\n    \"selectedPaymentMethod\":\"OM\",\n    \"preferredCurrency\":\"XAF\",\n    \"validationType\":\"PIN\",\n    \"payerId\":\"677438521\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/withdrawals/initialize",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"withdrawals",
+										"initialize"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "validate",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sessionToken\":\"ImzIF_fN7-IM-qDqxokZyEtorgPyDYMu\",\n    \"validationCode\":\"1234\",\n    \"validationType\":\"PIN\",\n    \"walletOwnerId\":\"1e700181-5e7b-4fa2-a617-fa3ea6572292\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/payments/api/v1/withdrawals/validate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"withdrawals",
+										"validate"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Security",
+					"item": [
+						{
+							"name": "test",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Transactions",
+					"item": [
+						{
+							"name": "checkTransactionStatus",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}/payments/api/v1/transactions/session/C2ilIQx9omXZ9xtffXG-ZDm9cRwmL1pv/status",
+									"host": [
+										"{{base-url}}"
+									],
+									"path": [
+										"payments",
+										"api",
+										"v1",
+										"transactions",
+										"session",
+										"C2ilIQx9omXZ9xtffXG-ZDm9cRwmL1pv",
+										"status"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "New request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Thibaut\",\n    \"email\":\"teste les webhook\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api-pay.faroty.me/payments/api/v1/payments/momo/callback",
+							"protocol": "https",
+							"host": [
+								"api-pay",
+								"faroty",
+								"me"
+							],
+							"path": [
+								"payments",
+								"api",
+								"v1",
+								"payments",
+								"momo",
+								"callback"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Souscriptions",
+			"item": [
+				{
+					"name": "Application",
+					"item": [
+						{
+							"name": "createApplication",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4ODdlNzBiNi0wNzRmLTQ3NGMtOGRlMi0yYmRhMGY1YTM4NmEiLCJzaWQiOiJmMmE3YTc0Ny1hNmE5LTQxMDgtODE3Yy1hNzIzMTJlMDY5ODMiLCJkZXZpY2VJZCI6ImZiYWM0YzIxLTc2MzktNDIyMC05Yjg4LTg2MzI3NzNlMGI3YSIsImVtYWlsIjoidHNhZ3VleXZlc3RoaWJhdXRAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiZXhwIjoxNzU5MDg0NzQxLCJpYXQiOjE3NTg5OTgzNDF9.oSVbAQGMksmnquX_wDzZSK9mCUgdDFpHgE7Ijx-j5rA",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Crowdfundingqwe\",\n  \"description\": \"Application de levee de fonqeed\",\n  \"version\": \"1.0.0\",\n  \"type\": \"web\",\n  \"platform\": \"web\",\n  \"iconUrl\": \"http://example.com/icon.png\",\n  \"websiteUrl\": \"http://example.com\",\n  \"supportEmail\": \"support@example.com\",\n  \"documentationUrl\": \"http://example.com/docs\"\n//   \"configuration\": {\n//     \"key\": \"value\"\n//   }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8087/souscription/api/v1/applications",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"souscription",
+										"api",
+										"v1",
+										"applications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllApplications",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Plan",
+					"item": [
+						{
+							"name": "getAllPlan",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "plan-feature",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"planId\": \"daf5e9e2-304c-4999-b72d-86e57010e513\",\n  \"featureId\": \"9f7112ea-0353-4dd3-8e2f-74fc3e002411\",\n  \"quotaLimit\": 1000,\n  \"included\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}/souscription/api/v1/plan-features",
+									"host": [
+										"{{base-url}}"
+									],
+									"path": [
+										"souscription",
+										"api",
+										"v1",
+										"plan-features"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "planfeature-of-plan",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8087/souscription/api/v1/plan-features/plan/50bcc0a3-eed7-42cb-a465-eef5b058dcff",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"souscription",
+										"api",
+										"v1",
+										"plan-features",
+										"plan",
+										"50bcc0a3-eed7-42cb-a465-eef5b058dcff"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "plan-with-fontionality",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/plans/b5166382-55e5-4e17-a0f4-726227b4464c/with-features",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"plans",
+										"b5166382-55e5-4e17-a0f4-726227b4464c",
+										"with-features"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Features",
+					"item": [
+						{
+							"name": "get-all-features",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8087/souscription/api/v1/features",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"souscription",
+										"api",
+										"v1",
+										"features"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Paiement en ligne\",\n  \"description\": \"Fonctionnalité de paiement en ligne sécurisé\",\n  \"type\": \"payment\",\n  \"category\": \"finance\",\n  \"applicationId\": \"87aba2fe-f90d-4520-84bf-c80fca7ca15b\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/features",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"features"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "feature-of-application",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8087/souscription/api/v1/features/application/2eae9d0b-ae23-4b6c-bc0f-bae3def755ca",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"souscription",
+										"api",
+										"v1",
+										"features",
+										"application",
+										"2eae9d0b-ae23-4b6c-bc0f-bae3def755ca"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Plans",
+					"item": [
+						{
+							"name": "micro-service-plan",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Plan L1\",\n  \"description\": \"Plan premium avec quota élevé\",\n  \"microserviceId\": \"09037f61-6178-4a76-8640-2c4ab7a2340a\",\n  \"monthlyPrice\": 99.99,\n  \"yearlyPrice\": 999.99,\n  \"quotaLimit\": 1000000,\n  \"priority\": 1,\n  \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/microservice-plans",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"microservice-plans"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Level 1\",\n  \"description\": \"Plan premium avec toutes les fonctionnalités\",\n  \"monthlyPrice\": 29.99,\n  \"yearlyPrice\": 299.99,\n  \"maxUsers\": 100,\n  \"maxStorage\": 1024,\n  \"priority\": 1,\n  \"applicationId\": \"87aba2fe-f90d-4520-84bf-c80fca7ca15b\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/plans",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"plans"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get-all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/plans",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"plans"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "plan-of-application",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/plans/application/87aba2fe-f90d-4520-84bf-c80fca7ca15b",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"plans",
+										"application",
+										"87aba2fe-f90d-4520-84bf-c80fca7ca15b"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOnePlan",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/plans/796af1f5-ae10-4e99-a5b3-36e171d4e5a9",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"plans",
+										"796af1f5-ae10-4e99-a5b3-36e171d4e5a9"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "featureOfPlan",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/plan-features/plan/14b0676b-31b5-4798-9faa-04650363ff8f",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"plan-features",
+										"plan",
+										"14b0676b-31b5-4798-9faa-04650363ff8f"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Souscription",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"contextId\": \"00000067-e89b-12d3-a456-426614174000\",\n    \"contextType\": \"GROUP\",\n    \"applicationId\": \"713e43fa-1f72-479b-b7dc-d691924f4c38\",\n    \"planId\": \"9e62ecc4-b641-4f35-a111-13e7b6eff3c8\",\n    \"billingCycle\": \"MONTHLY\"\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8087/souscription/api/v1/subscriptions",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"souscription",
+										"api",
+										"v1",
+										"subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "renew",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "addUserToContext",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"contextId\": \"e89b0000-e89b-12d3-a456-426614174000\",\n  \"contextType\": \"GROUP\",\n  \"userId\": \"ae630ad0-d8bc-4fd9-bf27-462fa363efc6\",\n  \"applicationId\": \"2eae9d0b-ae23-4b6c-bc0f-bae3def755ca\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}/souscription/api/v1/subscription-users",
+									"host": [
+										"{{base-url}}"
+									],
+									"path": [
+										"souscription",
+										"api",
+										"v1",
+										"subscription-users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Quotas",
+					"item": [
+						{
+							"name": "consume",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4ODdlNzBiNi0wNzRmLTQ3NGMtOGRlMi0yYmRhMGY1YTM4NmEiLCJzaWQiOiJmMmE3YTc0Ny1hNmE5LTQxMDgtODE3Yy1hNzIzMTJlMDY5ODMiLCJkZXZpY2VJZCI6ImZiYWM0YzIxLTc2MzktNDIyMC05Yjg4LTg2MzI3NzNlMGI3YSIsImVtYWlsIjoidHNhZ3VleXZlc3RoaWJhdXRAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiZXhwIjoxNzU5MDg0NzQxLCJpYXQiOjE3NTg5OTgzNDF9.oSVbAQGMksmnquX_wDzZSK9mCUgdDFpHgE7Ijx-j5rA",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-API-KEY",
+										"value": "ak_c227885b2c6c4045a16dee122fc96ce4_1759231755087",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"featureName\": \"send_email\",\n  \"quantity\": 1,\n  \"description\": \"Envoi d'email de notification\",\n  \"metadata\": {\n    \"userId\": \"123e4567-e89b-12d3-a456-426614174000\"\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8087/souscription/api/v1/quota/consume",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"souscription",
+										"api",
+										"v1",
+										"quota",
+										"consume"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "canConsume",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-API-KEY",
+										"value": "ak_c227885b2c6c4045a16dee122fc96ce4_1759231755087",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"featureName\": \"EMAIL_NOTIFICATIONS\",\n  \"quantity\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8087/souscription/api/v1/quota/check",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8087",
+									"path": [
+										"souscription",
+										"api",
+										"v1",
+										"quota",
+										"check"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Promotions",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"code\": \"SUMMER2024\",\n  \"discountPercentage\": 25.00,\n  \"startDate\": \"2024-06-01\",\n  \"endDate\": \"2024-08-31\",\n  \"maxUsage\": 100,\n  \"minPurchaseAmount\": 50.00,\n  \"planId\": \"2b118f06-dfc0-4764-b376-7a22c427d258\",\n  \"createdBy\": \"550e8400-e29b-41d4-a716-446655440000\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8086/api/v1/promotions",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"promotions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "promotions",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8086/api/v1/promotions",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8086",
+									"path": [
+										"api",
+										"v1",
+										"promotions"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getUserProfileFromAuthBayId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/auth/api/public/users/ae630ad7-d8bc-4fd9-bf27-462fa363efc6/info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"auth",
+								"api",
+								"public",
+								"users",
+								"ae630ad7-d8bc-4fd9-bf27-462fa363efc6",
+								"info"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4MGY5ZWU5OS1iZjY3LTRmZmYtOTE1NS0yMWU5MWUxZDE0YjEiLCJzaWQiOiJmNjRjOTMyMS0wZmQxLTRmY2ItYjlhMy1iYzcxYzY1MzQyZTciLCJkZXZpY2VJZCI6ImYzMTliMTk1LWQxZWItNGVkNi1iMjA3LTU0MjIzMzUzMzFhZCIsImVtYWlsIjoidHNhZ3VleXZlc3RoaWJhdXRAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiZXhwIjoxNzU5MTg1MDc1LCJpYXQiOjE3NTkwOTg2NzV9.xYZ3z_PZOlVvL7YKL7Pt943u14xSBqm_Lp8dyd4F728"
+		},
+		{
+			"key": "X-API-KEY",
+			"value": "pk_test_V9H3cXAcZSl5lP3QvtzzCBHX91ClWG2TGXN5P86KizQiQ82CdoVsnOrnH455wRrOCs7UlHT_0Xc"
+		},
+		{
+			"key": "base-api",
+			"value": "http://localhost:8082/payments"
+		}
+	]
+}

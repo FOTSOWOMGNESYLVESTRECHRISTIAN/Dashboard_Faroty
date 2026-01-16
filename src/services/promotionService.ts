@@ -98,14 +98,42 @@ const extractPromotionList = (payload: PromotionApiResponse): Promotion[] => {
 };
 
 export const promotionService = {
+  async getPromotionsByApplication(applicationId: string): Promise<Promotion[]> {
+    try {
+      const response = await apiClient.get<PromotionApiResponse>(
+        `${API_ENDPOINTS.ABONNEMENT.PROMOTIONS}/application/${applicationId}`
+      );
+      return extractPromotionList(response);
+    } catch (error: any) {
+      console.error("[promotionService] Error fetching promotions by application:", error, applicationId);
+      const message =
+        error instanceof Error ? error.message : "Impossible de récupérer les promotions de l'application";
+      throw new Error(message);
+    }
+  },
+
   async createPromotion(payload: PromotionPayload): Promise<{
     response: PromotionApiResponse;
     promotion: Promotion | null;
   }> {
     try {
+      // Nettoyer le payload pour ne garder que les champs acceptés par le backend
+      // Backend expects: "startDate", "planId", "active", "endDate", "discountPercentage", "code", "createdBy", "minPurchaseAmount", "maxUsage"
+      const sanitizedPayload = {
+        code: payload.code,
+        discountPercentage: payload.discountPercentage,
+        startDate: payload.startDate,
+        endDate: payload.endDate,
+        maxUsage: payload.maxUsage,
+        minPurchaseAmount: payload.minPurchaseAmount,
+        planId: payload.planId,
+        createdBy: payload.createdBy,
+        active: true // Toujours active à la création
+      };
+
       const response = await apiClient.post<PromotionApiResponse>(
-        API_ENDPOINTS.SUBSCRIPTION.PROMOTIONS,
-        payload,
+        API_ENDPOINTS.ABONNEMENT.PROMOTIONS,
+        sanitizedPayload,
       );
       return {
         response,
@@ -122,7 +150,7 @@ export const promotionService = {
   async listPromotions(options: PromotionListOptions = {}): Promise<Promotion[]> {
     try {
       const response = await apiClient.get<PromotionApiResponse>(
-        API_ENDPOINTS.SUBSCRIPTION.PROMOTIONS,
+        API_ENDPOINTS.ABONNEMENT.PROMOTIONS,
         {
           query: {
             planId: options.planId,

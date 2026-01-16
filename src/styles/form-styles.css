@@ -1,0 +1,149 @@
+/* Styles pour les champs de formulaire */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Styles pour les messages d'erreur */
+.form-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Style pour les champs obligatoires */
+.required-field::after {
+  content: " *";
+  color: #ef4444;
+}
+
+/* Style pour les messages d'aide sous les champs */
+.help-text {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* Style pour les onglets */
+.tab-active {
+  border-bottom: 2px solid #3b82f6;
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+/* Style pour les boutons de soumission en cours de chargement */
+.btn-loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.btn-loading::after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  top: 50%;
+  left: 50%;
+  margin-top: -0.5rem;
+  margin-left: -0.5rem;
+  border: 2px solid #ffffff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Style pour les cartes de formulaire */
+.form-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.form-card-header {
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  color: white;
+  padding: 1rem 1.5rem;
+  font-weight: 500;
+}
+
+.form-card-body {
+  padding: 1.5rem;
+}
+
+/* Style pour les groupes de champs */
+.field-group {
+  margin-bottom: 1.5rem;
+}
+
+.field-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Style pour les labels */
+.field-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Style pour les champs désactivés */
+.field-disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+/* Style pour les messages de succès/erreur */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.alert-success {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.alert-error {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Style pour les onglets */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  padding: 0.75rem 1rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: #3b82f6;
+}
+
+.tab-active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+  font-weight: 500;
+}

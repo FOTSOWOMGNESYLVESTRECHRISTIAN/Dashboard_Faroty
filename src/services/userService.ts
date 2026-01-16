@@ -7,15 +7,15 @@ import { AxiosError } from "axios";
 type ApiEnvelope<T> =
   | T
   | {
-      success?: boolean;
-      message?: string;
-      data?: T;
-      error?: any;
-      errorCode?: any;
-      content?: T;
-      items?: T;
-      records?: T;
-    };
+    success?: boolean;
+    message?: string;
+    data?: T;
+    error?: any;
+    errorCode?: any;
+    content?: T;
+    items?: T;
+    records?: T;
+  };
 
 export interface ApiUser {
   id: string;
@@ -93,7 +93,7 @@ const formatDateFromTimestamp = (timestamp: number | null | undefined): string |
 // Normaliser le statut de l'API vers le format attendu par le composant
 const normalizeStatus = (accountStatus: string, active: boolean): "active" | "inactive" | "suspended" => {
   if (!active) return "inactive";
-  
+
   const upperStatus = accountStatus?.toUpperCase() || "";
   if (upperStatus === "ACTIVE" || upperStatus === "VERIFIED" || upperStatus === "EMAIL_VERIFIED") {
     return "active";
@@ -117,7 +117,7 @@ const normalizeRole = (fullName?: string): "admin" | "user" | "moderator" => {
 const normalizeUser = (raw: ApiUser): User => {
   return {
     id: raw.id,
-    name: raw.fullName || "Utilisateur sans nom",
+    name: raw.fullName || (raw as any).name || "Utilisateur sans nom",
     email: raw.email || raw.phoneNumber || "Non renseigné",
     phoneNumber: normalizePhoneNumber(raw.phoneNumber),
     profilePictureUrl: raw.profilePictureUrl,
@@ -162,7 +162,7 @@ export const userService = {
       }
 
       console.log('[userService] Récupération des utilisateurs depuis:', API_ENDPOINTS.USERS.BASE);
-      
+
       // Faire la requête avec gestion des erreurs détaillée
       const response = await apiClient.get<ApiEnvelope<any>>(API_ENDPOINTS.USERS.BASE);
       console.log('[userService] Réponse de l\'API:', response);
@@ -221,17 +221,17 @@ export const userService = {
       });
     } catch (error) {
       console.error("[userService] Erreur lors de la récupération des utilisateurs:", error);
-      
+
       // Gestion détaillée des erreurs
       const apiError = error as ApiError;
-      
+
       if (apiError.response) {
         console.error('Détails de la réponse d\'erreur:', {
           status: apiError.response.status,
           headers: apiError.response.headers,
           data: apiError.response.data
         });
-        
+
         // Gestion spécifique des codes d'erreur
         if (apiError.response.status === 401) {
           throw new Error("Session expirée. Veuillez vous reconnecter.");
@@ -241,11 +241,11 @@ export const userService = {
           console.warn('Endpoint non trouvé, vérifiez la configuration des API');
           return [];
         }
-        
+
         // Essayer d'extraire un message d'erreur de la réponse
-        const errorMessage = apiError.response.data?.message || 
-                            apiError.response.data?.error ||
-                            `Erreur serveur (${apiError.response.status})`;
+        const errorMessage = apiError.response.data?.message ||
+          apiError.response.data?.error ||
+          `Erreur serveur (${apiError.response.status})`;
         throw new Error(errorMessage);
       } else if (apiError.request) {
         console.error('Aucune réponse reçue du serveur:', apiError.request);
@@ -254,6 +254,17 @@ export const userService = {
         console.error('Erreur lors de la configuration de la requête:', apiError.message);
         throw new Error(`Erreur de configuration: ${apiError.message}`);
       }
+    }
+  },
+  async getUserById(id: string): Promise<User | null> {
+    try {
+      const response = await apiClient.get<ApiEnvelope<any>>(API_ENDPOINTS.USERS.BY_ID(id));
+      if (!response) return null;
+      const data = unwrap<ApiUser>(response);
+      return normalizeUser(data);
+    } catch (error) {
+      console.error(`[userService] Error fetching user ${id}:`, error);
+      return null;
     }
   },
 };

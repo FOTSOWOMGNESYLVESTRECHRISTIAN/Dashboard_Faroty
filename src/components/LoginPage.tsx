@@ -247,6 +247,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         <button
           onClick={handleBack}
           className="absolute top-6 left-6 flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+          style={{ display: step === "otp" ? "block" : "none", cursor: "pointer"}}
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Retour</span>
@@ -291,6 +292,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                 type="submit"
                 className="w-full h-12 bg-[#6b7280] hover:bg-[#4b5563] text-white rounded-lg"
                 disabled={isLoading}
+                style={{ cursor: isLoading ? "not-allowed" : "pointer"}}
               >
                 {isLoading ? (
                   <>

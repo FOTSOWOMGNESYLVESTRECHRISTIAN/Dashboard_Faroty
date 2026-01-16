@@ -1,6 +1,32 @@
 // src/services/applicationService.ts
+// Déclaration de type pour process.env
+declare const process: {
+  env: {
+    NODE_ENV?: 'development' | 'production' | 'test';
+  };
+};
+
 import { API_ENDPOINTS } from "../utils/apiEndpoints";
 import { apiClient } from "../utils/apiClient";
+import { getUserProfile } from "./tokenStorage";
+
+export interface AppStats {
+  totalUsers?: number;
+  activeUsers?: number;
+  monthlyRevenue?: number;
+  totalTransactions?: number;
+  successRate?: number;
+  avgSession?: string;
+  stats?: {
+    totalUsers?: number;
+    activeUsers?: number;
+    monthlyRevenue?: number;
+    totalTransactions?: number;
+    successRate?: number;
+    avgSession?: string;
+  };
+  [key: string]: any;
+}
 
 export interface ApplicationPayload {
   name: string;
@@ -13,11 +39,13 @@ export interface ApplicationPayload {
   supportEmail: string;
   documentationUrl: string;
   configuration?: Record<string, unknown> | null;
+  status?: string;
+  isActive?: boolean;
 }
 
 export interface Application extends ApplicationPayload {
   id: string;
-  status?: string | null;
+  status?: string;
   createdAt?: string | null;
   updatedAt?: string | null;
   hasTrialPolicy?: boolean;
@@ -25,6 +53,7 @@ export interface Application extends ApplicationPayload {
   trialPeriodInDays?: number;
   unlimitedAccess?: boolean;
   abonnements?: number;
+  logo?: string;
 }
 
 export interface FeaturePayload {
@@ -41,8 +70,34 @@ export interface PlanPayload {
   monthlyPrice: number;
   yearlyPrice: number;
   maxUsers: number;
+  maxStorage?: number;
   priority: number;
   applicationId: string;
+  trialPeriodInDays?: number;
+  active?: boolean;
+  currencyCode?: string;
+}
+
+export interface Plan extends PlanPayload {
+  id: string;
+  status?: string;
+  interval?: 'month' | 'year';
+  createdAt?: string;
+  updatedAt?: string;
+  maxStorage?: number;
+}
+
+export interface PlanFeature {
+  id: string;
+  planId: string;
+  featureId: string;
+  included: boolean;
+  quotaLimit?: number | null;
+  feature?: {
+    id: string;
+    name: string;
+    description?: string;
+  };
 }
 
 export interface PlanFeatureAssignmentPayload {
@@ -73,12 +128,12 @@ export interface TrialPolicy {
 type ApiEnvelope<T> =
   | T
   | {
-      data?: T | { content?: T; items?: T; records?: T };
-      content?: T;
-      result?: T;
-      items?: T;
-      records?: T;
-    };
+    data?: T | { content?: T; items?: T; records?: T };
+    content?: T;
+    result?: T;
+    items?: T;
+    records?: T;
+  };
 
 const unwrap = <T = any>(payload: ApiEnvelope<T>): T => {
   if (!payload) return payload as T;
@@ -89,7 +144,7 @@ const unwrap = <T = any>(payload: ApiEnvelope<T>): T => {
 
   if (typeof payload === "object") {
     const obj = payload as Record<string, any>;
-    
+
     // Structure: { success, message, data: { content: [...] } }
     if (obj.data && typeof obj.data === "object" && !Array.isArray(obj.data)) {
       const nested = obj.data;
@@ -100,19 +155,19 @@ const unwrap = <T = any>(payload: ApiEnvelope<T>): T => {
       // Si data.content n'existe pas mais que data est un objet, on retourne data
       return nested as T;
     }
-    
+
     // Structure: { data: [...] }
     if (Array.isArray(obj.data)) return obj.data as T;
-    
+
     // Structure: { content: [...] }
     if (Array.isArray(obj.content)) return obj.content as T;
-    
+
     // Structure: { items: [...] }
     if (Array.isArray(obj.items)) return obj.items as T;
-    
+
     // Structure: { records: [...] }
     if (Array.isArray(obj.records)) return obj.records as T;
-    
+
     // Structure: { result: [...] } ou { result: {...} }
     if (obj.result && typeof obj.result === "object") {
       return obj.result as T;
@@ -192,6 +247,74 @@ const normalizeApplication = (raw: Record<string, any>): Application => {
   };
 };
 
+// Helper pour nettoyer le payload et ne garder que les champs autorisés
+const sanitizeApplicationPayload = (data: ApplicationPayload): Record<string, any> => {
+  const { status, isActive, ...otherFields } = data;
+
+  // Liste blanche des champs autorisés par le backend
+  const allowedFields = [
+    'name', 'description', 'version', 'type', 'platform',
+    'iconUrl', 'websiteUrl', 'supportEmail', 'documentationUrl',
+    'configuration'
+  ];
+
+  const payload: Record<string, any> = {};
+
+  // Copier uniquement les champs autorisés
+  for (const field of allowedFields) {
+    // On vérifie si le champ existe dans les données (même si la valeur est null ou string vide)
+    if (field in otherFields) {
+      // @ts-ignore
+      payload[field] = otherFields[field as keyof typeof otherFields];
+    }
+  }
+
+  // Gérer la conversion status -> isActive
+  payload.isActive = isActive !== undefined ? isActive : (status === 'active' || status === 'Active');
+
+  // Si configuration est null, on le retire du payload car certains backends n'aiment pas null explicite
+  if (payload.configuration === null) {
+    delete payload.configuration;
+  }
+
+  return payload;
+};
+
+// Helper pour nettoyer le payload des plans
+const sanitizePlanPayload = (data: PlanPayload): Record<string, any> => {
+  const { maxStorage, active, ...otherFields } = data; // On extrait maxStorage pour l'exclure
+
+  // Liste blanche des champs autorisés
+  const allowedFields = [
+    'name', 'description', 'monthlyPrice', 'yearlyPrice',
+    'maxUsers', 'trialPeriodInDays', 'priority', 'applicationId',
+    'currencyCode'
+  ];
+
+  const payload: Record<string, any> = {};
+
+  // Copier uniquement les champs autorisés
+  for (const field of allowedFields) {
+    if (field in otherFields) {
+      // @ts-ignore
+      payload[field] = otherFields[field as keyof typeof otherFields];
+    }
+  }
+
+  // Le backend attend "active" pour les plans (contrairement à "isActive" pour applications/feature updates)
+  // On s'assure qu'il est présent, par défaut true
+  payload.active = active !== undefined ? active : true;
+
+  // Valeurs par défaut obligatoires si manquantes
+  if (payload.trialPeriodInDays === undefined) payload.trialPeriodInDays = 0;
+  if (payload.priority === undefined) payload.priority = 0;
+  // @ts-ignore
+  if (!payload.currencyCode && data.currencyCode) payload.currencyCode = data.currencyCode || 'XAF';
+  if (!payload.currencyCode) payload.currencyCode = 'XAF';
+
+  return payload;
+};
+
 export const applicationService = {
   // Récupérer toutes les applications
   async getAllApplications(): Promise<Application[]> {
@@ -209,7 +332,8 @@ export const applicationService = {
   // Ajouter une application
   async addApplication(data: ApplicationPayload): Promise<Application> {
     try {
-      const payload = await apiClient.post<ApiEnvelope<any>>(API_ENDPOINTS.ABONNEMENT.APPLICATIONS, data);
+      const payloadData = sanitizeApplicationPayload(data);
+      const payload = await apiClient.post<ApiEnvelope<any>>(API_ENDPOINTS.ABONNEMENT.APPLICATIONS, payloadData);
       const raw = unwrap<Record<string, any>>(payload);
       return normalizeApplication(raw);
     } catch (error) {
@@ -221,7 +345,8 @@ export const applicationService = {
   // Modifier une application
   async updateApplication(id: string, data: ApplicationPayload): Promise<Application> {
     try {
-      const payload = await apiClient.put<ApiEnvelope<any>>(`${API_ENDPOINTS.ABONNEMENT.APPLICATIONS}/${id}`, data);
+      const payloadData = sanitizeApplicationPayload(data);
+      const payload = await apiClient.put<ApiEnvelope<any>>(`${API_ENDPOINTS.ABONNEMENT.APPLICATIONS}/${id}`, payloadData);
       const raw = unwrap<Record<string, any>>(payload);
       return normalizeApplication(raw);
     } catch (error) {
@@ -276,45 +401,130 @@ export const applicationService = {
     }
   },
 
-  async getPlansByApplication(applicationId: string) {
+  async getPlansByApplication(applicationId: string, options: { signal?: AbortSignal } = {}) {
+    // Délai d'attente de 10 secondes maximum
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort('Request timeout'), 10000);
+
     try {
+      // Utiliser l'AbortSignal passé en paramètre ou créer un nouveau
+      const signal = options.signal || controller.signal;
+
       const payload = await apiClient.get<ApiEnvelope<any>>(
         API_ENDPOINTS.ABONNEMENT.PLANS_BY_APPLICATION(applicationId),
+        { signal }
       );
+
+      clearTimeout(timeoutId);
+
       const list = unwrap<any[]>(payload) ?? [];
       if (Array.isArray(list) && list.length > 0) {
         return list;
       }
-    } catch (error) {
-      console.warn("[applicationService] Error fetching plans by application, fallback to global list", {
-        applicationId,
-        error,
-      });
-    }
 
-    const globalPlans = await applicationService.getAllPlans();
-    return globalPlans.filter((plan: any) => plan?.applicationId === applicationId);
+      // Si pas de plans, retourner un tableau vide au lieu d'essayer de filtrer les plans globaux
+      // pour éviter un double appel API inutile
+      return [];
+
+    } catch (error: unknown) {
+      clearTimeout(timeoutId);
+
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          console.warn(`[applicationService] Timeout when fetching plans for application ${applicationId}`);
+          throw new Error('Le chargement des plans a pris trop de temps');
+        }
+
+        console.warn(`[applicationService] Error fetching plans by application ${applicationId}:`, error);
+      } else {
+        console.warn(`[applicationService] Unknown error fetching plans by application ${applicationId}:`, error);
+      }
+
+      // En cas d'erreur, ne pas essayer de charger tous les plans pour éviter des appels API inutiles
+      // et des problèmes de performance
+      return [];
+    }
   },
 
-  async getPlanFeatures(planId: string) {
+  async getPlanFeatures(planId: string, options: { signal?: AbortSignal } = {}): Promise<PlanFeature[]> {
+    const controller = new AbortController();
+    const timeoutDuration = 30000; // 30 secondes pour toutes les environnements
+    const timeoutId = setTimeout(() => {
+      console.warn(`[applicationService] Timeout reached for plan ${planId}, aborting...`);
+      controller.abort('Request timeout');
+    }, timeoutDuration);
+
     try {
-      const payload = await apiClient.get<ApiEnvelope<any>>(
+      const signal = options.signal || controller.signal;
+
+      console.log(`[applicationService] Fetching features for plan ${planId}...`);
+
+      const payload = await apiClient.get<ApiEnvelope<PlanFeature[]>>(
         API_ENDPOINTS.ABONNEMENT.PLAN_FEATURES_BY_PLAN(planId),
+        {
+          signal,
+          // Ne pas utiliser le cache pour éviter les problèmes de données obsolètes
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        }
       );
-      const list = unwrap<any[]>(payload) ?? [];
-      return Array.isArray(list) ? list : [list].filter(Boolean);
-    } catch (error) {
-      console.error("[applicationService] Error fetching plan features:", error, { planId });
-      throw error instanceof Error ? error : new Error("Impossible de récupérer les fonctionnalités du plan");
+
+      clearTimeout(timeoutId);
+
+      if (!payload) {
+        console.warn(`[applicationService] Empty response for plan ${planId}`);
+        return [];
+      }
+
+      const list = unwrap<PlanFeature[]>(payload) ?? [];
+      const result = Array.isArray(list) ? list : [];
+
+      console.log(`[applicationService] Successfully loaded ${result.length} features for plan ${planId}`);
+      return result;
+
+    } catch (error: unknown) {
+      clearTimeout(timeoutId);
+
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          const message = `Le chargement des fonctionnalités pour le plan ${planId} a pris trop de temps (${timeoutDuration / 1000}s)`;
+          console.warn(`[applicationService] ${message}`, error);
+          throw new Error(message);
+        }
+
+        console.warn(`[applicationService] Error fetching features for plan ${planId}:`, error);
+        // En cas d'erreur, on retourne un tableau vide au lieu de propager l'erreur
+        return [];
+      } else {
+        console.warn(`[applicationService] Unknown error when fetching features for plan ${planId}:`, error);
+        return [];
+      }
     }
   },
 
   async addPlan(data: PlanPayload) {
     try {
-      return await apiClient.post(API_ENDPOINTS.ABONNEMENT.PLANS, data);
+      const payload = sanitizePlanPayload(data);
+      return await apiClient.post(API_ENDPOINTS.ABONNEMENT.PLANS, payload);
     } catch (error) {
       console.error("[applicationService] Error adding plan:", error, data);
       throw error instanceof Error ? error : new Error("Échec de la création du plan");
+    }
+  },
+
+  async updatePlan(id: string, data: PlanPayload) {
+    try {
+      const payload = sanitizePlanPayload(data);
+      // Pour l'update, on peut avoir besoin de remettre l'ID dans le payload ou non,
+      // ça dépend du backend, mais généralement PUT /plans/{id} suffit avec le body.
+      return await apiClient.put(`${API_ENDPOINTS.ABONNEMENT.PLANS}/${id}`, payload);
+    } catch (error) {
+      console.error("[applicationService] Error updating plan:", error, data);
+      throw error instanceof Error ? error : new Error("Échec de la mise à jour du plan");
     }
   },
 
@@ -351,10 +561,10 @@ export const applicationService = {
         },
       );
       const raw = unwrap<Record<string, any>>(payload);
-      
+
       // La réponse peut être dans data.content ou directement dans raw
       const responseData = raw?.data || raw;
-      
+
       // Si c'est directement une liste (array), on la wrappe
       if (Array.isArray(responseData)) {
         return {
@@ -378,10 +588,10 @@ export const applicationService = {
           hasPrevious: false,
         };
       }
-      
+
       // Sinon, c'est un objet paginé
       const content = responseData?.content || responseData?.items || [];
-      
+
       return {
         content: content.map((item: any) => ({
           id: item.id,
@@ -427,14 +637,14 @@ export const applicationService = {
           API_ENDPOINTS.ABONNEMENT.TRIAL_POLICY_BY_APPLICATION(applicationId),
         );
         const raw = unwrap<Record<string, any>>(payload);
-        
+
         // Gérer la réponse qui peut être dans data ou directement dans raw
         const policyData = raw?.data || raw;
-        
+
         if (!policyData || !policyData.id) {
           return null;
         }
-        
+
         return {
           id: policyData.id,
           applicationId: policyData.applicationId || applicationId,
@@ -455,8 +665,8 @@ export const applicationService = {
           },
         );
         const raw = unwrap<Record<string, any>>(payload);
-        
-        // Si c'est une liste, prendre le premier élément
+
+        // Si c'est une liste, prendre le premier
         if (Array.isArray(raw)) {
           const policy = raw.find((p: any) => p.applicationId === applicationId);
           if (!policy || !policy.id) {
@@ -473,13 +683,13 @@ export const applicationService = {
             updatedAt: policy.updatedAt,
           };
         }
-        
+
         // Sinon, traiter comme un objet unique
         const policyData = raw?.data || raw;
         if (!policyData || !policyData.id) {
           return null;
         }
-        
+
         return {
           id: policyData.id,
           applicationId: policyData.applicationId || applicationId,
@@ -508,7 +718,7 @@ export const applicationService = {
         );
         const raw = unwrap<Record<string, any>>(payload);
         const policyData = raw.data || raw;
-        
+
         return {
           id: policyData.id || raw.id || existingPolicyId,
           applicationId: policyData.applicationId || data.applicationId,
@@ -532,7 +742,7 @@ export const applicationService = {
         );
         const raw = unwrap<Record<string, any>>(payload);
         const policyData = raw.data || raw;
-        
+
         return {
           id: policyData.id || raw.id || existingPolicy.id,
           applicationId: policyData.applicationId || data.applicationId,
@@ -543,7 +753,7 @@ export const applicationService = {
           updatedAt: policyData.updatedAt || raw.updatedAt,
         };
       }
-      
+
       // Aucune politique existante, utiliser POST pour créer
       const payload = await apiClient.post<ApiEnvelope<any>>(
         API_ENDPOINTS.ABONNEMENT.TRIAL_POLICIES,
@@ -551,7 +761,7 @@ export const applicationService = {
       );
       const raw = unwrap<Record<string, any>>(payload);
       const policyData = raw.data || raw;
-      
+
       return {
         id: policyData.id || raw.id,
         applicationId: policyData.applicationId || data.applicationId,
@@ -575,7 +785,7 @@ export const applicationService = {
             );
             const raw = unwrap<Record<string, any>>(payload);
             const policyData = raw.data || raw;
-            
+
             return {
               id: policyData.id || raw.id || existing.id,
               applicationId: policyData.applicationId || data.applicationId,
@@ -591,7 +801,7 @@ export const applicationService = {
           throw retryError;
         }
       }
-      
+
       // Si l'erreur est 500 et qu'on a un existingPolicyId, essayer PUT avec l'ID directement
       if ((error.message?.includes("500") || error.message?.includes("500")) && existingPolicyId) {
         console.warn("[applicationService] 500 error detected, retrying with PUT using ID in URL...");
@@ -602,7 +812,7 @@ export const applicationService = {
           );
           const raw = unwrap<Record<string, any>>(payload);
           const policyData = raw.data || raw;
-          
+
           return {
             id: policyData.id || raw.id || existingPolicyId,
             applicationId: policyData.applicationId || data.applicationId,
@@ -617,7 +827,7 @@ export const applicationService = {
           throw retryError;
         }
       }
-      
+
       console.error("[applicationService] Error creating/updating trial policy:", error, data);
       throw error instanceof Error ? error : new Error("Échec de la création/mise à jour de la politique d'essai");
     }
@@ -625,12 +835,22 @@ export const applicationService = {
 
   async deleteTrialPolicy(policyId: string): Promise<void> {
     try {
-      await apiClient.delete(`${API_ENDPOINTS.ABONNEMENT.TRIAL_POLICIES}/${policyId}`);
+      await apiClient.delete(`/applications/trial-policies/${policyId}`);
     } catch (error) {
-      console.error("[applicationService] Error deleting trial policy:", error, { policyId });
-      throw error instanceof Error ? error : new Error("Échec de la suppression de la politique d'essai");
+      console.error('Error deleting trial policy:', error);
+      throw error;
     }
   },
+
+  async getApplicationStats(applicationId: string): Promise<AppStats> {
+    try {
+      const response = await apiClient.get<AppStats>(`/applications/${applicationId}/stats`);
+      return response.data || {};
+    } catch (error) {
+      console.error('Error fetching application stats:', error);
+      return {};
+    }
+  }
 };
 
 const FALLBACK_APPLICATIONS: Record<string, any>[] = [

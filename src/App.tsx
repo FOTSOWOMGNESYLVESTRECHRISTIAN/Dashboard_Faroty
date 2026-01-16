@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { LoginPage } from "./components/LoginPage";
+// import TestLogin from "./components/login";
 import { Dashboard } from "./components/Dashboard";
 import { Toaster } from "./components/ui/sonner";
 import { authService } from "./services/authService";
@@ -42,6 +43,7 @@ export default function App() {
         <Dashboard onLogout={handleLogout} user={user} />
       ) : (
         <LoginPage onLogin={handleLogin} />
+        // <TestLogin onLogin={handleLogin} />
       )}
       <Toaster />
     </>
